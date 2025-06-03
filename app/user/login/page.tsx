@@ -20,7 +20,7 @@ export default function LoginPage() {
         credentials: 'include',
         body: JSON.stringify({ username, password }),
       });
-
+    console.log(process.env.NEXT_PUBLIC_API_URL);
       if (res.ok) {
         const data = await res.json();
         localStorage.setItem('access_token', data.access);
