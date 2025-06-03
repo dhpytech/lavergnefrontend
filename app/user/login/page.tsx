@@ -14,13 +14,13 @@ export default function LoginPage() {
     setError('');
 
     try {
-      const res = await fetch(`https://gunicorn-lavergnebackendwsgi-production.up.railway.app/account/token/login/`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/account/token/login/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({ username, password }),
       });
-    console.log(process.env.NEXT_PUBLIC_API_URL);
+      console.log(process.env.NEXT_PUBLIC_API_URL);
       if (res.ok) {
         const data = await res.json();
         localStorage.setItem('access_token', data.access);
