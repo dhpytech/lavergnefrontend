@@ -14,7 +14,7 @@ export default function LoginPage() {
     setError('');
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/account/token/login/`, {
+      const res = await fetch(`https://gunicorn-lavergnebackendwsgi-production.up.railway.app/account/token/login/, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
