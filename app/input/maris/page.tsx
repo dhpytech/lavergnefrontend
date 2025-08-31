@@ -202,30 +202,27 @@ export default function MarisInputPage() {
       </div>
 
       {/* Số dòng Dữ liệu chính */}
-      <div>
-        <label className="font-semibold">Số dòng dữ liệu chính: </label>
-        <select
-          className="p-2 border rounded"
-          value={mainDataRows}
-          onChange={(e) => handleMainDataRowChange(Number(e.target.value))}
-        >
-          {[1, 2, 3, 4, 5].map((n) => (
-            <option key={n} value={n}>
-              {n}
-            </option>
-          ))}
-        </select>
-      </div>
+        <div className="flex items-center">
+          <label className="font-semibold mr-3">Production Input:</label>
+            <select className="p-2 border rounded" value={mainDataRows}
+              onChange={(e) => handleMainDataRowChange(Number(e.target.value))}>
+              {[1, 2, 3, 4, 5].map((n) => (
+                    <option key={n} value={n}>
+                        {n}
+                    </option>
+                ))}
+            </select>
+        </div>
 
-      {/* Dữ liệu Chính */}
-      <div className="space-y-4">
-        <h2 className="text-lg font-semibold">Dữ liệu Chính</h2>
-        {formData.mainData.map((row, idx) => (
-          <div key={idx} className="grid grid-cols-8 gap-2">
-            <select
-              className="p-2 border rounded"
-              value={row.productCode}
-              onChange={(e) => updateFormArray('mainData', idx, 'productCode', e.target.value)}
+        {/* Dữ liệu Chính */}
+        <div className="space-y-4">
+            <h2 className="text-lg font-semibold">Dữ liệu Chính</h2>
+            {formData.mainData.map((row, idx) => (
+                <div key={idx} className="grid grid-cols-8 gap-2">
+                    <select
+                        className="p-2 border rounded"
+                        value={row.productCode}
+                        onChange={(e) => updateFormArray('mainData', idx, 'productCode', e.target.value)}
             >
               <option value="">ProductCode</option>
               {PRODUCT_CODES.map((code) => (
@@ -261,54 +258,54 @@ export default function MarisInputPage() {
       </div>
 
       {/* StopTime */}
-      <div className="space-y-4">
-        <h2 className="text-lg font-semibold">Stop Time</h2>
-        <select
-          className="p-2 border rounded"
-          value={formData.stopTimeRows}
-          onChange={(e) => handleDynamicRowChange('stopTimes', Number(e.target.value))}
-        >
-          {[0, 1, 2, 3, 4, 5].map((n) => (
-            <option key={n} value={n}>
-              {n}
-            </option>
-          ))}
-        </select>
-        {formData.stopTimes.map((row, idx) => (
-          <div key={idx} className="grid grid-cols-2 gap-2">
+
+
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <h2 className="text-lg font-semibold">Stop Time</h2>
             <select
-              className="p-2 border rounded"
-              value={row.stopTime}
-              onChange={(e) => updateFormArray('stopTimes', idx, 'stopTime', e.target.value)}
-            >
-              <option value="">Chọn StopTime</option>
-              {STOP_TIMES.map((st) => (
-                <option key={st} value={st}>
-                  {st}
-                </option>
+              className="p-2 border rounded" value={formData.stopTimeRows}
+              onChange={(e) => handleDynamicRowChange('stopTimes', Number(e.target.value))}>
+              {[0, 1, 2, 3, 4, 5].map((n) => (
+              <option key={n} value={n}>{n}</option>
               ))}
             </select>
-            <input
-              type="text"
-              placeholder="Giờ/Thời gian"
-              className="p-2 border rounded"
-              value={row.hour}
-              onChange={(e) => updateFormArray('stopTimes', idx, 'hour', e.target.value)}
-            />
           </div>
-        ))}
-      </div>
+            {formData.stopTimes.map((row, idx) => (
+                <div key={idx} className="grid grid-cols-2 gap-2">
+                    <select
+                        className="p-2 border rounded"
+                        value={row.stopTime}
+                        onChange={(e) => updateFormArray('stopTimes', idx, 'stopTime', e.target.value)}
+                    >
+                        <option value="">Chọn StopTime</option>
+                        {STOP_TIMES.map((st) => (
+                            <option key={st} value={st}>
+                                {st}
+                            </option>
+                        ))}
+                    </select>
+                    <input
+                        type="text"
+                        placeholder="Giờ/Thời gian"
+                        className="p-2 border rounded"
+                        value={row.hour}
+                        onChange={(e) => updateFormArray('stopTimes', idx, 'hour', e.target.value)}
+                    />
+                </div>
+            ))}
+        </div>
 
-      {/* Problem */}
-      <div className="space-y-4">
-        <h2 className="text-lg font-semibold">Problem</h2>
-        <select
-          className="p-2 border rounded"
-          value={formData.problemRows}
-          onChange={(e) => handleDynamicRowChange('problems', Number(e.target.value))}
-        >
-          {[0, 1, 2, 3, 4, 5].map((n) => (
-            <option key={n} value={n}>
+        {/* Problem */}
+        <div className="space-y-4">
+            <h2 className="text-lg font-semibold">Problem</h2>
+            <select
+                className="p-2 border rounded"
+                value={formData.problemRows}
+                onChange={(e) => handleDynamicRowChange('problems', Number(e.target.value))}
+            >
+                {[0, 1, 2, 3, 4, 5].map((n) => (
+                    <option key={n} value={n}>
               {n}
             </option>
           ))}

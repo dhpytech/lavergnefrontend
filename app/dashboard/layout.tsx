@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { Bell } from 'lucide-react'; // icon chuông thông báo
 
 const menu = [
-  { label: 'Information', path: '/info/main' },
+  { label: 'Information', path: '' },
   { label: 'Maris Input', path: '/input/maris' },
   { label: 'Bagging Input', path: '/input/bagging' },
   { label: 'Metal Input', path: '/input/metal' },
@@ -41,14 +41,16 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
       <header className="w-full bg-sky-300 shadow-md flex items-center justify-between px-6 py-2">
-        <div className="flex items-center gap-3">
-          <img
-            src="/lavergne.png"
-            alt="Logo"
-            className="h-10 w-auto"
-          />
-          <span className="text-white font-bold text-lg">LAVERGNE VN</span>
-        </div>
+        <Link href={"../user/home"}>
+          <div className="flex items-center gap-3">
+            <img
+              src="/lavergne.png"
+              alt="Logo"
+              className="h-10 w-auto"
+            />
+            <span className="text-white font-bold text-lg">LAVERGNE VN</span>
+          </div>
+        </Link>
 
         {/* Menu Buttons */}
         <nav className="flex-1 mx-6">

@@ -3,23 +3,17 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { Bell } from 'lucide-react'; // icon chuông thông báo
 
 const menu = [
-  {
-    title: 'Input Data',
-    items: ['maris', 'bagging', 'metal'],
-    path: '../input',
-  },
-  {
-    title: 'Dashboard',
-    items: ['maris-db', 'bagging-db', 'metal-db'],
-    path: '../dashboard',
-  },
-  {
-    title: 'IsoFile',
-    items: [],
-    path: '../isofile',
-  },
+  { label: 'Information', path: '/info/main' },
+  { label: 'Maris Input', path: '/input/maris' },
+  { label: 'Bagging Input', path: '/input/bagging' },
+  { label: 'Metal Input', path: '/input/metal' },
+  { label: 'Maris DB', path: '/dashboard/maris-db' },
+  { label: 'Bagging DB', path: '/dashboard/bagging-db' },
+  { label: 'Metal DB', path: '/dashboard/metal-db' },
+  { label: 'IsoFile', path: '/isofile' },
 ];
 
 export default function HomeLayout({ children }: { children: React.ReactNode }) {
@@ -45,77 +39,60 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
-      <aside className="w-64 bg-white shadow-lg flex flex-col justify-between">
-        {/* User section lên đầu */}
-        <div className="border-b p-4 flex items-center justify-between gap-3">
+    <div className="min-h-screen flex flex-col bg-gray-100">
+      <header className="w-full bg-sky-300 shadow-md flex items-center justify-between px-6 py-2">
+        <Link href="./home">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
+            <img
+              src="/lavergne.png"
+              alt="Logo"
+              className="h-10 w-auto"
+            />
+            <span className="text-white font-bold text-lg">LAVERGNE VN</span>
+          </div>
+        </Link>
+        {/* Menu Buttons */}
+        <nav className="flex-1 mx-6">
+          <ul className="flex flex-wrap gap-2 justify-center">
+            {menu.map((item) => (
+              <li key={item.path}>
+                <Link
+                  href={item.path}
+                  className={`px-3 py-1 rounded-md border text-sm font-medium shadow-sm ${
+                    pathname === item.path
+                      ? 'bg-white text-sky-700 font-semibold'
+                      : 'bg-sky-100 text-sky-800 hover:bg-white'
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        {/* User Info */}
+        <div className="flex items-center gap-3">
+          {/*<Bell className="text-white w-5 h-5"/>*/}
+          <span className="text-white text-sm hidden md:inline">Welcome Lavergne Group</span>
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold">
               {username ? username[0].toUpperCase() : '?'}
             </div>
-            <div>
-              <p className="text-sm font-semibold text-gray-800">{username || 'Guest'}</p>
-              <p className="text-xs text-gray-500">Người dùng</p>
-            </div>
+            <button
+                onClick={handleLogout}
+                title="Đăng xuất"
+                className="text-xs text-white underline hover:text-red-200"
+            >
+              Thoát
+            </button>
           </div>
-          <button
-            onClick={handleLogout}
-            className="text-sm text-red-500 hover:underline"
-            title="Đăng xuất"
-          >
-            Thoát
-          </button>
+
         </div>
-
-        {/* Menu */}
-        <nav className="p-4 space-y-4 flex-1 overflow-auto">
-          {menu.map((group) => (
-            <div key={group.title}>
-              <p className="text-sm font-semibold text-gray-500 mb-2">{group.title}</p>
-              <ul className="space-y-1">
-                {group.items.length > 0 ? (
-                  group.items.map((item) => {
-                    const href = `/home/${group.path}/${item}`;
-                    const isActive = pathname === href;
-
-                    return (
-                      <li key={item}>
-                        <Link
-                          href={href}
-                          className={`block px-4 py-2 rounded-lg text-sm font-medium transition ${
-                            isActive
-                              ? 'bg-blue-100 text-blue-700'
-                              : 'hover:bg-gray-100 text-gray-700'
-                          }`}
-                        >
-                          {item[0].toUpperCase() + item.slice(1)}
-                        </Link>
-                      </li>
-                    );
-                  })
-                ) : (
-                  <li>
-                    <Link
-                      href={`/home/${group.path}`}
-                      className={`block px-4 py-2 rounded-lg text-sm font-medium transition ${
-                        pathname === `/home/${group.path}`
-                          ? 'bg-blue-100 text-blue-700'
-                          : 'hover:bg-gray-100 text-gray-700'
-                      }`}
-                    >
-                      {group.title}
-                    </Link>
-                  </li>
-                )}
-              </ul>
-            </div>
-          ))}
-        </nav>
-      </aside>
+      </header>
 
       {/* Main content */}
-      <main className="flex-1 p-10">{children}</main>
+      <main className="flex-1 p-6 " style={{backgroundImage:"url('/BG A LE.png')",backgroundSize:"100% 100%",backgroundRepeat:"no-repeat",}}>{children}</main>
     </div>
   );
 }
