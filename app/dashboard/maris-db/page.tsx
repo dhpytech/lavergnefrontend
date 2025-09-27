@@ -13,6 +13,11 @@ type StatType = {
   lastYear: string;
 };
 
+type ChartType = {
+  name: string;
+  value: number;
+};
+
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#A28BFF', '#FF6699', '#33CC99', '#FF9933'];
 
 export default function MarisDashboard() {
@@ -20,39 +25,53 @@ export default function MarisDashboard() {
   const [startDate, setStartDate] = useState('2025-06-01');
   const [endDate, setEndDate] = useState('2025-06-30');
   const [stats, setStats] = useState<StatType[]>([]);
-  const [chartData, setChartData] = useState<any[]>([]);
+  const [chartDataPie, setChartDataPie] = useState<ChartType[]>([]);
+  const [chartDataBar, setChartDataBar] = useState<ChartType[]>([]);
+  const [loading, setLoading] = useState(false);
+
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedStat, setSelectedStat] = useState<StatType | null>(null);
 
-  const handleViewStats = () => {
-    const simulatedStats: StatType[] = [
-      { label: 'PRODUCTION (KG)', value: 247393, lastMonth: '+26.89%', lastYear: '-14.47%' },
-      { label: 'YIELD (%)', value: '97.12%', lastMonth: '+2.08%', lastYear: '-0.44%' },
-      { label: 'OEE (%)', value: '52.59%', lastMonth: '+4.21%', lastYear: '-0.88%' },
-      { label: 'UTILISATION (%)', value: '58.67%', lastMonth: '-1.56%', lastYear: '-17.46%' },
-      { label: 'NET/HOUR (KG/HOUR)', value: '646.083', lastMonth: '+3.72%', lastYear: '+11.50%' },
-      { label: 'SCRAP (KG)', value: 5870, lastMonth: '-8.95%', lastYear: '+1.79%' },
-      { label: 'SCRAP/PRODUCTION (%)', value: '2.373', lastMonth: '-28.24%', lastYear: '+19.01%' },
-      { label: 'DL/NC (KG)', value: 4000, lastMonth: '-14.95%', lastYear: '-28.70%' },
-      { label: 'MTBF (HOUR)', value: 672, lastMonth: '+21.74%', lastYear: '+460.00%' },
-      { label: 'MTTR (HOUR)', value: 0, lastMonth: '0.00%', lastYear: '-100.00%' },
-      { label: 'NUMBER OF ORDER CHANGE', value: 8, lastMonth: '-11.11%', lastYear: '-20.00%' },
-      { label: 'NUMBER OF MECHANICAL FAILURE', value: 1, lastMonth: '0.00%', lastYear: '-83.33%' },
-    ];
+  const handleViewStats = async () => {
+    setLoading(true);
+    try {
+      const query = `start_date=${startDate}&end_date=${endDate}`;
+      const res = await fetch(`http://localhost:8000/dashboard/maris/?${query}`);
 
-    const simulatedChartData = [
-      { name: 'S014-47', value: 72915 },
-      { name: 'S031-11', value: 64772 },
-      { name: 'S118-01', value: 10520 },
-      { name: 'S029-20', value: 1962 },
-      { name: 'S001-02', value: 20912 },
-      { name: 'S051-08', value: 46660 },
-      { name: 'S031-04', value: 23395 },
-      { name: 'S028-08', value: 2257 },
-    ];
 
-    setStats(simulatedStats);
-    setChartData(simulatedChartData);
+      if (!res.ok) {
+        throw new Error('Không thể tải dữ liệu');
+      }
+
+      const data = await res.json();
+
+      // Convert stats object -> array
+      const statsArray: StatType[] = Object.entries(data.stats).map(([key, val]: any) => ({
+        label: key,
+        value: val.value,
+        lastMonth: val.lastMonth,
+        lastYear: val.lastYear,
+      }));
+
+      setStats(statsArray);
+      setChartDataPie(
+        (data.charts.production_pie || []).map((item: any) => ({
+          name: item.productCode,
+          value: item.production,
+        }))
+      );
+      setChartDataBar(
+        (data.charts.production_bar || []).map((item: any) => ({
+          name: item.productCode,
+          value: item.production,
+        }))
+      );
+    } catch (error) {
+      console.error(error);
+      alert('Lỗi khi tải dữ liệu!');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleOpenModal = (stat: StatType) => {
@@ -85,8 +104,12 @@ export default function MarisDashboard() {
           <label className="text-sm font-semibold">End:</label>
           <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="border rounded px-2 py-1" />
         </div>
-        <button onClick={handleViewStats} className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded">
-          Xem Thống Kê
+        <button
+          onClick={handleViewStats}
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded disabled:opacity-50"
+          disabled={loading}
+        >
+          {loading ? 'Đang tải...' : 'Xem Thống Kê'}
         </button>
       </div>
 
@@ -101,8 +124,12 @@ export default function MarisDashboard() {
             <h3 className="text-sm font-semibold text-gray-700">{stat.label}</h3>
             <p className="text-2xl font-bold text-blue-700">{stat.value}</p>
             <div className="text-sm mt-1">
-              <span className={`mr-2 ${stat.lastMonth.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>Last Month: {stat.lastMonth}</span>
-              <span className={`${stat.lastYear.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>Last Year: {stat.lastYear}</span>
+              <span className={`mr-2 ${stat.lastMonth.startsWith('-') ? 'text-red-600' : 'text-green-600'}`}>
+                Last Month: {stat.lastMonth}
+              </span>
+              <span className={`${stat.lastYear.startsWith('-') ? 'text-red-600' : 'text-green-600'}`}>
+                Last Year: {stat.lastYear}
+              </span>
             </div>
           </div>
         ))}
@@ -115,8 +142,8 @@ export default function MarisDashboard() {
           <h3 className="text-sm font-semibold mb-2">Productions per Item (Pie)</h3>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
-              <Pie data={chartData} dataKey="value" nameKey="name" outerRadius={100} fill="#8884d8" label>
-                {chartData.map((_, index) => (
+              <Pie data={chartDataPie} dataKey="value" nameKey="name" outerRadius={100} fill="#8884d8" label>
+                {chartDataPie.map((_, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
@@ -130,7 +157,7 @@ export default function MarisDashboard() {
         <div className="bg-white shadow rounded p-4">
           <h3 className="text-sm font-semibold mb-2">Productions per Item (Bar)</h3>
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={chartData}>
+            <BarChart data={chartDataBar}>
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip />
@@ -156,9 +183,8 @@ export default function MarisDashboard() {
               </button>
             </div>
 
-            {/* Body */}p
+            {/* Body */}
             <div className="p-6 max-h-[70vh] overflow-auto">
-              {/* Bảng dữ liệu mô phỏng */}
               <table className="w-full text-sm border border-gray-200">
                 <thead className="bg-blue-100 text-gray-700 text-left">
                   <tr>
@@ -169,7 +195,7 @@ export default function MarisDashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {[
+                  {[ // tạm dữ liệu mock
                     { date: '2025-06-01', shift: 'Ca 1', code: 'S014-47', amount: '7,000' },
                     { date: '2025-06-01', shift: 'Ca 2', code: 'S031-11', amount: '8,000' },
                     { date: '2025-06-02', shift: 'Ca 1', code: 'S051-08', amount: '10,500' },
