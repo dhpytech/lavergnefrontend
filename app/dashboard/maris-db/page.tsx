@@ -36,11 +36,10 @@ export default function MarisDashboard() {
     setLoading(true);
     try {
       const query = `start_date=${startDate}&end_date=${endDate}`;
-      const res = await fetch(`http://localhost:8000/dashboard/maris/?${query}`);
-
+      const res = await fetch(`http://127.0.0.1:8000/dashboard/maris/?${query}`);
 
       if (!res.ok) {
-        throw new Error('Không thể tải dữ liệu');
+        throw new Error('Không thể tải dữ liệu AAA');
       }
 
       const data = await res.json();
