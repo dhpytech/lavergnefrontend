@@ -6,19 +6,63 @@ import {
   ResponsiveContainer, PieChart, Pie, Cell, Legend
 } from 'recharts';
 
-type StatType = {
+// Kiểu dữ liệu
+ type StatType = {
   label: string;
   value: string | number;
   lastMonth: string;
   lastYear: string;
 };
 
-type ChartType = {
+ type ChartType = {
   name: string;
   value: number;
 };
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#A28BFF', '#FF6699', '#33CC99', '#FF9933'];
+
+// Target cho các chỉ số
+const targets: Record<string, number> = {
+  "SCRAP/PRODUCTION (%)": 1,
+  "OEE (%)": 80,
+  "YIELD (%)": 98,
+  "UTILISATION (%)": 83,
+  "MTTR (HOUR)": 2.5,
+  "MTBF (HOUR)": 20,
+};
+
+function StatCard({ stat, onClick }: { stat: StatType; onClick?: () => void }) {
+  const target = targets[stat.label];
+  const numericValue = parseFloat(String(stat.value).replace(/[%]/g, ""));
+  return (
+    <div
+      onClick={onClick}
+      className="bg-white shadow rounded p-4 cursor-pointer hover:bg-blue-50"
+    >
+      <h3 className="text-sm font-semibold text-gray-700">{stat.label}</h3>
+      <p className="text-2xl font-bold text-blue-700">{stat.value}</p>
+      <div className="text-sm mt-1">
+        <span className={`mr-2 ${stat.lastMonth.startsWith('-') ? 'text-red-600' : 'text-green-600'}`}>
+          Last Month: {stat.lastMonth}
+        </span>
+        <span className={`${stat.lastYear.startsWith('-') ? 'text-red-600' : 'text-green-600'}`}>
+          Last Year: {stat.lastYear}
+        </span>
+      </div>
+      {target !== undefined && !isNaN(numericValue) && (
+        <div className="mt-2">
+          <div className="h-2 bg-gray-200 rounded">
+            <div
+              className="h-2 bg-green-500 rounded"
+              style={{ width: `${Math.min((numericValue / target) * 100, 100)}%` }}
+            />
+          </div>
+          <p className="text-xs text-gray-500 mt-1">Target: {target}</p>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function MarisDashboard() {
   const [shiftType, setShiftType] = useState('Total');
@@ -39,7 +83,7 @@ export default function MarisDashboard() {
       const res = await fetch(`http://127.0.0.1:8000/dashboard/maris/?${query}`);
 
       if (!res.ok) {
-        throw new Error('Không thể tải dữ liệu AAA');
+        throw new Error('Can not load data from DB');
       }
 
       const data = await res.json();
@@ -67,7 +111,7 @@ export default function MarisDashboard() {
       );
     } catch (error) {
       console.error(error);
-      alert('Lỗi khi tải dữ liệu!');
+      alert('Data Error!');
     } finally {
       setLoading(false);
     }
@@ -112,57 +156,64 @@ export default function MarisDashboard() {
         </button>
       </div>
 
-      {/* Thống kê */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {stats.map((stat, idx) => (
-          <div
-            key={idx}
-            onClick={() => handleOpenModal(stat)}
-            className="bg-white shadow rounded p-4 cursor-pointer hover:bg-blue-50"
-          >
-            <h3 className="text-sm font-semibold text-gray-700">{stat.label}</h3>
-            <p className="text-2xl font-bold text-blue-700">{stat.value}</p>
-            <div className="text-sm mt-1">
-              <span className={`mr-2 ${stat.lastMonth.startsWith('-') ? 'text-red-600' : 'text-green-600'}`}>
-                Last Month: {stat.lastMonth}
-              </span>
-              <span className={`${stat.lastYear.startsWith('-') ? 'text-red-600' : 'text-green-600'}`}>
-                Last Year: {stat.lastYear}
-              </span>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Biểu đồ */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Pie Chart */}
-        <div className="bg-white shadow rounded p-4">
-          <h3 className="text-sm font-semibold mb-2">Productions per Item (Pie)</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie data={chartDataPie} dataKey="value" nameKey="name" outerRadius={100} fill="#8884d8" label>
-                {chartDataPie.map((_, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Legend />
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
+      {/* Layout 3 cột */}
+      <div className="grid grid-cols-4 gap-4">
+        {/* Cột 1 */}
+        <div className="space-y-4">
+          {stats.filter(stat => [
+            "PRODUCTION (KG)",
+            "NET/HOUR (KG/HOUR)",
+            "DL/NC (KG)",
+            "SCRAP (KG)",
+            "SCRAP/PRODUCTION (%)",
+            "NUMBER OF ORDER CHANGE",
+            "NUMBER OF MECHANICAL FAILURE",
+          ].includes(stat.label)).map((stat, idx) => (
+            <StatCard key={idx} stat={stat} onClick={() => handleOpenModal(stat)} />
+          ))}
         </div>
 
-        {/* Bar Chart */}
-        <div className="bg-white shadow rounded p-4">
-          <h3 className="text-sm font-semibold mb-2">Productions per Item (Bar)</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={chartDataBar}>
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="value" fill="#1D4ED8" />
-            </BarChart>
-          </ResponsiveContainer>
+        {/* Cột 2 (2 phần) */}
+        <div className="col-span-2 space-y-4">
+          <div className="bg-white shadow rounded p-4">
+            <h3 className="text-sm font-semibold mb-2">Productions per Item (Pie)</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie data={chartDataPie} dataKey="value" nameKey="name" outerRadius={100} fill="#8884d8" label>
+                  {chartDataPie.map((_, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Legend />
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="bg-white shadow rounded p-4">
+            <h3 className="text-sm font-semibold mb-2">Productions per Item (Bar)</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={chartDataBar}>
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="value" fill="#1D4ED8" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Cột 3 */}
+        <div className="space-y-4">
+          {stats.filter(stat => [
+            "OEE (%)",
+            "YIELD (%)",
+            "UTILISATION (%)",
+            "STOP TIME (HOUR)",
+            "MTTR (HOUR)",
+            "MTBF (HOUR)",
+          ].includes(stat.label)).map((stat, idx) => (
+            <StatCard key={idx} stat={stat} onClick={() => handleOpenModal(stat)} />
+          ))}
         </div>
       </div>
 
