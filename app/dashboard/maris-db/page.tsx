@@ -7,57 +7,80 @@ import {
 } from 'recharts';
 
 // Kiểu dữ liệu
- type StatType = {
+type StatType = {
   label: string;
   value: string | number;
   lastMonth: string;
   lastYear: string;
 };
 
- type ChartType = {
+type ChartType = {
   name: string;
   value: number;
 };
 
+// Màu cho chart
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#A28BFF', '#FF6699', '#33CC99', '#FF9933'];
 
-// Target cho các chỉ số
-const targets: Record<string, number> = {
-  "SCRAP/PRODUCTION (%)": 1,
-  "OEE (%)": 80,
-  "YIELD (%)": 98,
-  "UTILISATION (%)": 83,
-  "MTTR (HOUR)": 2.5,
-  "MTBF (HOUR)": 20,
+// Target + hướng so sánh
+const targetRules: Record<string, { target: number; direction: 'higher' | 'lower' }> = {
+  "SCRAP/PRODUCTION (%)": { target: 1, direction: 'lower' },
+  "OEE (%)": { target: 80, direction: 'higher' },
+  "YIELD (%)": { target: 98, direction: 'higher' },
+  "UTILISATION (%)": { target: 83, direction: 'higher' },
+  "MTTR (HOUR)": { target: 2.5, direction: 'lower' },
+  "MTBF (HOUR)": { target: 200, direction: 'higher' },
 };
 
 function StatCard({ stat, onClick }: { stat: StatType; onClick?: () => void }) {
-  const target = targets[stat.label];
+  const rule = targetRules[stat.label];
   const numericValue = parseFloat(String(stat.value).replace(/[%]/g, ""));
+
+  // Màu bar theo logic
+  let barColor = "bg-gray-400";
+  if (rule && !isNaN(numericValue)) {
+    const { target, direction } = rule;
+    const isBad =
+      direction === "higher"
+        ? numericValue < target // cần cao hơn target
+        : numericValue > target; // cần thấp hơn target
+
+    barColor = isBad ? "bg-red-500" : "bg-green-500";
+  }
+
   return (
     <div
       onClick={onClick}
-      className="bg-white shadow rounded p-4 cursor-pointer hover:bg-blue-50"
+      className="bg-white shadow rounded p-4 cursor-pointer hover:bg-blue-50 transition-colors"
     >
       <h3 className="text-sm font-semibold text-gray-700">{stat.label}</h3>
       <p className="text-2xl font-bold text-blue-700">{stat.value}</p>
       <div className="text-sm mt-1">
-        <span className={`mr-2 ${stat.lastMonth.startsWith('-') ? 'text-red-600' : 'text-green-600'}`}>
+        <span
+          className={`mr-2 ${stat.lastMonth.startsWith('-') ? 'text-red-600' : 'text-green-600'}`}
+        >
           Last Month: {stat.lastMonth}
         </span>
-        <span className={`${stat.lastYear.startsWith('-') ? 'text-red-600' : 'text-green-600'}`}>
+        <span
+          className={`${stat.lastYear.startsWith('-') ? 'text-red-600' : 'text-green-600'}`}
+        >
           Last Year: {stat.lastYear}
         </span>
       </div>
-      {target !== undefined && !isNaN(numericValue) && (
+
+      {rule && !isNaN(numericValue) && (
         <div className="mt-2">
           <div className="h-2 bg-gray-200 rounded">
             <div
-              className="h-2 bg-green-500 rounded"
-              style={{ width: `${Math.min((numericValue / target) * 100, 100)}%` }}
+              className={`h-2 rounded ${barColor}`}
+              style={{
+                width: `${Math.min((numericValue / rule.target) * 100, 100)}%`,
+              }}
             />
           </div>
-          <p className="text-xs text-gray-500 mt-1">Target: {target}</p>
+          <p className="text-xs text-gray-500 mt-1">
+            Target: {rule.target} ({rule.direction === 'higher' ? '≥' : '≤'})
+          </p>
         </div>
       )}
     </div>
@@ -79,7 +102,7 @@ export default function MarisDashboard() {
   const handleViewStats = async () => {
     setLoading(true);
     try {
-      const query = `start_date=${startDate}&end_date=${endDate}`;
+      const query = `start_date=${startDate}&end_date=${endDate}&shift=${shiftType}`;
       const res = await fetch(`http://127.0.0.1:8000/dashboard/maris/?${query}`);
 
       if (!res.ok) {
@@ -88,25 +111,28 @@ export default function MarisDashboard() {
 
       const data = await res.json();
 
-      // Convert stats object -> array
-      const statsArray: StatType[] = Object.entries(data.stats).map(([key, val]: any) => ({
-        label: key,
-        value: val.value,
-        lastMonth: val.lastMonth,
-        lastYear: val.lastYear,
-      }));
+      const statsArray: StatType[] = Object.entries(data.stats).map(
+        ([key, val]: any) => ({
+          label: key,
+          value: val.value,
+          lastMonth: val.lastMonth,
+          lastYear: val.lastYear,
+        })
+      );
 
       setStats(statsArray);
       setChartDataPie(
         (data.charts.production_pie || []).map((item: any) => ({
-          name: item.productCode,
-          value: item.production,
+          name: item.name,
+          value: item.value,
+          percent: item.percent,
         }))
       );
       setChartDataBar(
         (data.charts.production_bar || []).map((item: any) => ({
-          name: item.productCode,
-          value: item.production,
+          name: item.name,
+          value: item.value,
+          percent: item.percent,
         }))
       );
     } catch (error) {
@@ -133,7 +159,11 @@ export default function MarisDashboard() {
       <div className="bg-white p-4 shadow rounded flex flex-wrap items-center gap-4">
         <div className="flex items-center gap-2">
           <label className="text-sm font-semibold">Shift:</label>
-          <select value={shiftType} onChange={(e) => setShiftType(e.target.value)} className="border rounded px-2 py-1">
+          <select
+            value={shiftType}
+            onChange={(e) => setShiftType(e.target.value)}
+            className="border rounded px-2 py-1"
+          >
             <option value="Total">Total</option>
             <option value="Day">Day</option>
             <option value="Night">Night</option>
@@ -141,11 +171,21 @@ export default function MarisDashboard() {
         </div>
         <div className="flex items-center gap-2">
           <label className="text-sm font-semibold">Start:</label>
-          <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="border rounded px-2 py-1" />
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="border rounded px-2 py-1"
+          />
         </div>
         <div className="flex items-center gap-2">
           <label className="text-sm font-semibold">End:</label>
-          <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="border rounded px-2 py-1" />
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="border rounded px-2 py-1"
+          />
         </div>
         <button
           onClick={handleViewStats}
@@ -160,43 +200,62 @@ export default function MarisDashboard() {
       <div className="grid grid-cols-4 gap-4">
         {/* Cột 1 */}
         <div className="space-y-4">
-          {stats.filter(stat => [
-            "PRODUCTION (KG)",
-            "NET/HOUR (KG/HOUR)",
-            "DL/NC (KG)",
-            "SCRAP (KG)",
-            "SCRAP/PRODUCTION (%)",
-            "NUMBER OF ORDER CHANGE",
-            "NUMBER OF MECHANICAL FAILURE",
-          ].includes(stat.label)).map((stat, idx) => (
-            <StatCard key={idx} stat={stat} onClick={() => handleOpenModal(stat)} />
-          ))}
+          {stats
+            .filter((stat) =>
+              [
+                'PRODUCTION (KG)',
+                'NET/HOUR (KG/HOUR)',
+                'DL/NC (KG)',
+                'SCRAP (KG)',
+                'SCRAP/PRODUCTION (%)',
+                'NUMBER OF ORDER CHANGE',
+                'NUMBER OF MECHANICAL FAILURE',
+              ].includes(stat.label)
+            )
+            .map((stat, idx) => (
+              <StatCard key={idx} stat={stat} onClick={() => handleOpenModal(stat)} />
+            ))}
         </div>
 
-        {/* Cột 2 (2 phần) */}
+        {/* Cột 2 */}
         <div className="col-span-2 space-y-4">
           <div className="bg-white shadow rounded p-4">
-            <h3 className="text-sm font-semibold mb-2">Productions per Item (Pie)</h3>
-            <ResponsiveContainer width="100%" height={300}>
+            <h3 className="text-sm font-semibold mb-2">
+              Productions per Item (Pie)
+            </h3>
+            <ResponsiveContainer width="100%" height={400}>
               <PieChart>
-                <Pie data={chartDataPie} dataKey="value" nameKey="name" outerRadius={100} fill="#8884d8" label>
+                <Pie
+                  data={chartDataPie}
+                  dataKey="percent"
+                  nameKey="name"
+                  outerRadius={150}
+                  fill="#8884d8"
+                  label={({ percent }) => `${percent}%`}
+                >
                   {chartDataPie.map((_, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  )) as unknown as React.ReactNode}
                 </Pie>
                 <Legend />
                 <Tooltip />
               </PieChart>
             </ResponsiveContainer>
           </div>
+
           <div className="bg-white shadow rounded p-4">
-            <h3 className="text-sm font-semibold mb-2">Productions per Item (Bar)</h3>
-            <ResponsiveContainer width="100%" height={300}>
+            <h3 className="text-sm font-semibold mb-2">
+              Productions per Item (Bar)
+            </h3>
+            <ResponsiveContainer width="100%" height={380}>
               <BarChart data={chartDataBar}>
                 <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
-                <Bar dataKey="value" fill="#1D4ED8" />
+                <Bar dataKey="value" fill="#1D4ED8" label />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -204,26 +263,33 @@ export default function MarisDashboard() {
 
         {/* Cột 3 */}
         <div className="space-y-4">
-          {stats.filter(stat => [
-            "OEE (%)",
-            "YIELD (%)",
-            "UTILISATION (%)",
-            "STOP TIME (HOUR)",
-            "MTTR (HOUR)",
-            "MTBF (HOUR)",
-          ].includes(stat.label)).map((stat, idx) => (
-            <StatCard key={idx} stat={stat} onClick={() => handleOpenModal(stat)} />
-          ))}
+          {stats
+            .filter((stat) =>
+              [
+                'OEE (%)',
+                'YIELD (%)',
+                'UTILISATION (%)',
+                'STOP TIME (HOUR)',
+                'MTTR (HOUR)',
+                'MTBF (HOUR)',
+                'SAFETY TIME (HOUR)',
+              ].includes(stat.label)
+            )
+            .map((stat, idx) => (
+              <StatCard key={idx} stat={stat} onClick={() => handleOpenModal(stat)} />
+            ))}
         </div>
       </div>
 
       {/* Modal */}
       {modalOpen && selectedStat && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-sm">
-          <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full mx-4 animate-fade-in-up">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full mx-4 animate-fade-in-up transition-all duration-300 ease-out">
             {/* Header */}
             <div className="flex justify-between items-center px-6 py-4 border-b">
-              <h2 className="text-xl font-semibold text-gray-800">Chi tiết: {selectedStat.label}</h2>
+              <h2 className="text-xl font-semibold text-gray-800">
+                Chi tiết: {selectedStat.label}
+              </h2>
               <button
                 onClick={handleCloseModal}
                 className="text-gray-500 hover:text-red-600 text-2xl font-bold"
@@ -245,7 +311,7 @@ export default function MarisDashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {[ // tạm dữ liệu mock
+                  {[
                     { date: '2025-06-01', shift: 'Ca 1', code: 'S014-47', amount: '7,000' },
                     { date: '2025-06-01', shift: 'Ca 2', code: 'S031-11', amount: '8,000' },
                     { date: '2025-06-02', shift: 'Ca 1', code: 'S051-08', amount: '10,500' },
