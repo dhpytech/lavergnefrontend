@@ -192,7 +192,7 @@ export default function MarisDashboard() {
           className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded disabled:opacity-50"
           disabled={loading}
         >
-          {loading ? 'Đang tải...' : 'Xem Thống Kê'}
+          {loading ? 'Đang tải...' : 'View Dashboard'}
         </button>
       </div>
 
