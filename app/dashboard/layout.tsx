@@ -3,17 +3,13 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Bell } from 'lucide-react'; // icon chuông thông báo
+import { Bell, Info, Database, Keyboard, ChartNoAxesCombined, FileSliders,} from 'lucide-react'; // icon chuông thông báo
 
 const menu = [
-  { label: 'Information', path: '' },
-  { label: 'Maris Input', path: '/input/maris' },
-  { label: 'Bagging Input', path: '/input/bagging' },
-  { label: 'Metal Input', path: '/input/metal' },
-  { label: 'Maris DB', path: '/dashboard/maris-db' },
-  { label: 'Bagging DB', path: '/dashboard/bagging-db' },
-  { label: 'Metal DB', path: '/dashboard/metal-db' },
-  { label: 'IsoFile', path: '/isofile' },
+  { label: 'INFORMATION', path: '/info/main' , icon: Info, color: 'text-blue-600'  },
+  { label: 'DATA INPUT', path: '/input/main', icon: Keyboard, color: 'text-green-600'  },
+  { label: 'DASHBOARD', path: '/dashboard/main', icon: ChartNoAxesCombined, color: 'text-yellow-600'  },
+  { label: 'EXPORT FILE', path: '/isofile' , icon: FileSliders, color: 'text-violet-600'  },
 ];
 
 export default function HomeLayout({ children }: { children: React.ReactNode }) {
@@ -41,7 +37,7 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
       <header className="w-full bg-sky-300 shadow-md flex items-center justify-between px-6 py-2">
-        <Link href={"../user/home"}>
+        <Link href="./home">
           <div className="flex items-center gap-3">
             <img
               src="/lavergne.png"
@@ -51,24 +47,27 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
             <span className="text-white font-bold text-lg">LAVERGNE VN</span>
           </div>
         </Link>
-
         {/* Menu Buttons */}
         <nav className="flex-1 mx-6">
           <ul className="flex flex-wrap gap-2 justify-center">
-            {menu.map((item) => (
-              <li key={item.path}>
-                <Link
-                  href={item.path}
-                  className={`px-3 py-1 rounded-md border text-sm font-medium shadow-sm ${
-                    pathname === item.path
-                      ? 'bg-white text-sky-700 font-semibold'
-                      : 'bg-sky-100 text-sky-800 hover:bg-white'
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
+            {menu.map((item) => {
+              const Icon = item.icon; // 👈 Quan trọng
+              return (
+                <li key={item.path}>
+                  <Link
+                    href={item.path}
+                    className={`flex items-center gap-2 px-3 py-1 rounded-md border text-sm font-medium shadow-sm ${
+                      pathname === item.path
+                        ? 'bg-white text-sky-700 font-semibold'
+                        : 'bg-sky-100 text-sky-800 hover:bg-white'
+                    }`}
+                  >
+                    <Icon className={`w-5 h-5 ${item.color}`} />
+                    <span>{item.label}</span>
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </nav>
 
@@ -93,7 +92,7 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
       </header>
 
       {/* Main content */}
-      <main className="flex-1 p-6 " style={{backgroundImage:"url('/bg-welcome.jpg')" }}>{children}</main>
+      <main className="flex-1 p-6 " style={{backgroundImage:"url('/BG A LE.png')",backgroundSize:"100% 100%",backgroundRepeat:"no-repeat",}}>{children}</main>
     </div>
   );
 }
