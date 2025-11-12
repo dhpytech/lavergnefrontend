@@ -37,7 +37,7 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
       <header className="w-full bg-sky-300 shadow-md flex items-center justify-between px-6 py-2">
-        <Link href="./home">
+        <Link href="../user/home">
           <div className="flex items-center gap-3">
             <img
               src="/lavergne.png"
