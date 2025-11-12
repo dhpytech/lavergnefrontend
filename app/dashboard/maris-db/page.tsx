@@ -35,6 +35,7 @@ const targetRules: Record<string, { target: number; direction: 'higher' | 'lower
 
 function StatCard({ stat, onClick }: { stat: StatType; onClick?: () => void }) {
   const rule = targetRules[stat.label];
+  // Chuyển đổi giá trị sang số (loại bỏ %)
   const numericValue = parseFloat(String(stat.value).replace(/[%]/g, ""));
 
   let barColor = "bg-gray-400";
@@ -97,13 +98,24 @@ export default function MarisDashboard() {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedStat, setSelectedStat] = useState<StatType | null>(null);
 
+  // SỬA LỖI FETCH DATA: Dùng URL trực tiếp với HTTPS://
+  const API_BASE_URL = "https://gunicorn-lavergnebackendwsgi-production.up.railway.app";
+
   const handleViewStats = async () => {
     setLoading(true);
     try {
       const query = `start_date=${startDate}&end_date=${endDate}&shift=${shiftType}`;
-      const res = await fetch(`https://gunicorn-lavergnebackendwsgi-production.up.railway.app/dashboard/maris/?${query}`);
 
-      if (!res.ok) throw new Error('Can not load data from DB');
+      // SỬA: Lệnh fetch sử dụng URL trực tiếp có HTTPS://
+      const res = await fetch(`${API_BASE_URL}/dashboard/maris/?${query}`);
+
+      if (!res.ok) {
+          // Xử lý lỗi chi tiết hơn nếu response không OK (ví dụ: 404, 500)
+          const errorText = await res.text();
+          console.error("API Error Response Status:", res.status, res.statusText);
+          console.error("API Error Detail:", errorText);
+          throw new Error('API returned non-OK status or network error.');
+      }
 
       const data = await res.json();
 
@@ -134,8 +146,8 @@ export default function MarisDashboard() {
 
       setShowCharts(true);
     } catch (error) {
-      console.error(error);
-      alert('Data Error!');
+      console.error("Fetch Data Failed:", error);
+      alert('Data Error! (Check Console F12 for details)');
     } finally {
       setLoading(false);
     }
@@ -226,8 +238,8 @@ export default function MarisDashboard() {
             ))}
         </div>
 
-        {/* Cột 2 (Biểu đồ) - ĐÃ GIẢM CHIỀU CAO ĐỂ CÂN BẰNG LAYOUT */}
-        <div className="col-span-2 space-y-4"> {/* Tăng khoảng cách giữa các phần tử lên 4 */}
+        {/* Cột 2 (Biểu đồ) */}
+        <div className="col-span-2 space-y-4">
           {!showCharts && (
             <div className="text-center text-gray-500 italic py-8 bg-white shadow rounded h-full flex items-center justify-center">
               Nhấn “View Dashboard” để hiển thị biểu đồ thống kê
@@ -240,16 +252,16 @@ export default function MarisDashboard() {
                 <h3 className="text-sm font-semibold mb-2">
                   Productions per Item (Pie)
                 </h3>
-                {/* Giảm height từ 400 xuống 350 */}
+                {/* Giảm height để cân bằng layout */}
                 <ResponsiveContainer width="100%" height={350}>
                   <PieChart>
                     <Pie
                       data={chartDataPie}
                       dataKey="percent"
                       nameKey="name"
-                      outerRadius={130} // Giảm bán kính cho phù hợp
+                      outerRadius={130}
                       fill="#8884d8"
-                      // FIX LỖI COMPILE: Đảm bảo percent là number trước khi nhân
+                      // FIX LỖI COMPILE (TypeScript)
                       label={({ percent }: any) => {
                           const value = typeof percent === 'number' ? percent : 0;
                           return `${(value * 100).toFixed(0)}%`;
@@ -269,7 +281,7 @@ export default function MarisDashboard() {
                 <h3 className="text-sm font-semibold mb-2">
                   Productions per Item (Bar)
                 </h3>
-                {/* Giảm height từ 480 xuống 350 */}
+                {/* Giảm height để cân bằng layout */}
                 <ResponsiveContainer width="100%" height={350}>
                   <BarChart data={chartDataBar}>
                     <XAxis dataKey="name" />
@@ -284,7 +296,7 @@ export default function MarisDashboard() {
         </div>
 
         {/* Cột 3 */}
-        <div className="space-y-4"> {/* Tăng khoảng cách giữa các phần tử lên 4 */}
+        <div className="space-y-4">
           {stats
             .filter((stat) =>
               [
