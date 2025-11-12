@@ -101,7 +101,7 @@ export default function MarisDashboard() {
     setLoading(true);
     try {
       const query = `start_date=${startDate}&end_date=${endDate}&shift=${shiftType}`;
-      const res = await fetch(`gunicorn-lavergnebackendwsgi-production.up.railway.app/dashboard/maris/?${query}`);
+      const res = await fetch(`https://gunicorn-lavergnebackendwsgi-production.up.railway.app/dashboard/maris/?${query}`);
 
       if (!res.ok) throw new Error('Can not load data from DB');
 
