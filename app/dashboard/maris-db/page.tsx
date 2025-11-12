@@ -17,6 +17,7 @@ type StatType = {
 type ChartType = {
   name: string;
   value: number;
+  percent: number;
 };
 
 // Màu cho chart
