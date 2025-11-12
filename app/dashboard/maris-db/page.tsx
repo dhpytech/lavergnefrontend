@@ -154,7 +154,7 @@ export default function MarisDashboard() {
   return (
     <div className="space-y-6">
 
-      {/* 🚀 Bộ lọc - Đã thêm 'justify-between' để đẩy Safety Time sang phải */}
+      {/* 🚀 Bộ lọc */}
       <div className="bg-white p-4 shadow rounded flex flex-wrap items-center justify-between gap-4">
 
         {/* Nhóm Controls (Left side) */}
@@ -204,7 +204,7 @@ export default function MarisDashboard() {
         </div>
       </div>
 
-      {/* 📊 Layout 3 cột - Sử dụng Grid với items-stretch (mặc định) để chiều cao tự co giãn */}
+      {/* 📊 Layout 3 cột */}
       <div className="grid grid-cols-4 gap-4">
 
         {/* Cột 1 */}
@@ -226,8 +226,8 @@ export default function MarisDashboard() {
             ))}
         </div>
 
-        {/* Cột 2 (Biểu đồ) */}
-        <div className="col-span-2 space-y-3">
+        {/* Cột 2 (Biểu đồ) - ĐÃ GIẢM CHIỀU CAO ĐỂ CÂN BẰNG LAYOUT */}
+        <div className="col-span-2 space-y-4"> {/* Tăng khoảng cách giữa các phần tử lên 4 */}
           {!showCharts && (
             <div className="text-center text-gray-500 italic py-8 bg-white shadow rounded h-full flex items-center justify-center">
               Nhấn “View Dashboard” để hiển thị biểu đồ thống kê
@@ -240,15 +240,20 @@ export default function MarisDashboard() {
                 <h3 className="text-sm font-semibold mb-2">
                   Productions per Item (Pie)
                 </h3>
-                <ResponsiveContainer width="100%" height={400}>
+                {/* Giảm height từ 400 xuống 350 */}
+                <ResponsiveContainer width="100%" height={350}>
                   <PieChart>
                     <Pie
                       data={chartDataPie}
                       dataKey="percent"
                       nameKey="name"
-                      outerRadius={150}
+                      outerRadius={130} // Giảm bán kính cho phù hợp
                       fill="#8884d8"
-                      label={({ percent }) => `${percent}%`}
+                      // FIX LỖI COMPILE: Đảm bảo percent là number trước khi nhân
+                      label={({ percent }: any) => {
+                          const value = typeof percent === 'number' ? percent : 0;
+                          return `${(value * 100).toFixed(0)}%`;
+                      }}
                     >
                       {chartDataPie.map((_, index) => (
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -264,7 +269,8 @@ export default function MarisDashboard() {
                 <h3 className="text-sm font-semibold mb-2">
                   Productions per Item (Bar)
                 </h3>
-                <ResponsiveContainer width="100%" height={480}>
+                {/* Giảm height từ 480 xuống 350 */}
+                <ResponsiveContainer width="100%" height={350}>
                   <BarChart data={chartDataBar}>
                     <XAxis dataKey="name" />
                     <YAxis />
@@ -278,7 +284,7 @@ export default function MarisDashboard() {
         </div>
 
         {/* Cột 3 */}
-        <div className="space-y-3">
+        <div className="space-y-4"> {/* Tăng khoảng cách giữa các phần tử lên 4 */}
           {stats
             .filter((stat) =>
               [
