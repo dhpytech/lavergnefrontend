@@ -60,7 +60,7 @@ function StatBox({ label, value, lastMonth, lastYear }: any) {
     const diff = current - prev;
     const pct = (diff / prev) * 100;
     const color = diff >= 0 ? 'text-green-500' : 'text-red-500';
-    const sign = diff >= 0 ? '+' : '-';
+    const sign = diff >= 0 ? '+' : '';
     return <span className={color}>{sign}{Math.abs(pct).toFixed(1)}%</span>;
   };
 
@@ -147,7 +147,10 @@ export default function DashboardPage() {
                     cx="50%"
                     cy="50%"
                     outerRadius={80}
-                    label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
+                    label={({ percent }: any) => {
+                        const value = typeof percent === 'number' ? percent : 0;
+                        return `${(value * 100).toFixed(0)}%`;
+                    }}
                   >
                     {pieData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
