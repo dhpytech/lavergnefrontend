@@ -36,15 +36,11 @@ function StatCard({ stat, onClick }: { stat: StatType; onClick?: () => void }) {
   const rule = targetRules[stat.label];
   const numericValue = parseFloat(String(stat.value).replace(/[%]/g, ""));
 
-  // Màu bar theo logic
   let barColor = "bg-gray-400";
   if (rule && !isNaN(numericValue)) {
     const { target, direction } = rule;
     const isBad =
-      direction === "higher"
-        ? numericValue < target // cần cao hơn target
-        : numericValue > target; // cần thấp hơn target
-
+      direction === "higher" ? numericValue < target : numericValue > target;
     barColor = isBad ? "bg-red-500" : "bg-green-500";
   }
 
@@ -95,6 +91,7 @@ export default function MarisDashboard() {
   const [chartDataPie, setChartDataPie] = useState<ChartType[]>([]);
   const [chartDataBar, setChartDataBar] = useState<ChartType[]>([]);
   const [loading, setLoading] = useState(false);
+  const [showCharts, setShowCharts] = useState(false);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedStat, setSelectedStat] = useState<StatType | null>(null);
@@ -105,9 +102,7 @@ export default function MarisDashboard() {
       const query = `start_date=${startDate}&end_date=${endDate}&shift=${shiftType}`;
       const res = await fetch(`http://127.0.0.1:8000/dashboard/maris/?${query}`);
 
-      if (!res.ok) {
-        throw new Error('Can not load data from DB');
-      }
+      if (!res.ok) throw new Error('Can not load data from DB');
 
       const data = await res.json();
 
@@ -135,6 +130,8 @@ export default function MarisDashboard() {
           percent: item.percent,
         }))
       );
+
+      setShowCharts(true);
     } catch (error) {
       console.error(error);
       alert('Data Error!');
@@ -155,114 +152,132 @@ export default function MarisDashboard() {
 
   return (
     <div className="space-y-6">
-      {/* Bộ lọc */}
-      <div className="bg-white p-4 shadow rounded flex flex-wrap items-center gap-4">
-        <div className="flex items-center gap-2">
-          <label className="text-sm font-semibold">Shift:</label>
-          <select
-            value={shiftType}
-            onChange={(e) => setShiftType(e.target.value)}
-            className="border rounded px-2 py-1"
-          >
-            <option value="Total">Total</option>
-            <option value="Day">Day</option>
-            <option value="Night">Night</option>
-          </select>
+
+      {/* 🚀 Bộ lọc - Đã thêm 'justify-between' để đẩy Safety Time sang phải */}
+      <div className="bg-white p-4 shadow rounded flex flex-wrap items-center justify-between gap-4">
+
+        {/* Nhóm Controls (Left side) */}
+        <div className="flex flex-wrap items-center gap-4">
+            <div className="flex items-center gap-2">
+                <label className="text-sm font-semibold">Shift:</label>
+                <select
+                    value={shiftType}
+                    onChange={(e) => setShiftType(e.target.value)}
+                    className="border rounded px-2 py-1"
+                >
+                    <option value="Total">Total</option>
+                    <option value="Day">Day</option>
+                    <option value="Night">Night</option>
+                </select>
+            </div>
+            <div className="flex items-center gap-2">
+                <label className="text-sm font-semibold">Start:</label>
+                <input
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    className="border rounded px-2 py-1"
+                />
+            </div>
+            <div className="flex items-center gap-2">
+                <label className="text-sm font-semibold">End:</label>
+                <input
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    className="border rounded px-2 py-1"
+                />
+            </div>
+            <button
+                onClick={handleViewStats}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded disabled:opacity-50"
+                disabled={loading}
+            >
+                {loading ? 'Đang tải...' : 'View Dashboard'}
+            </button>
         </div>
-        <div className="flex items-center gap-2">
-          <label className="text-sm font-semibold">Start:</label>
-          <input
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            className="border rounded px-2 py-1"
-          />
+
+        {/* Safety Time (Right side) */}
+        <div className="text-sm font-bold text-green-700">
+            SAFETY TIMES: 1000 HOURS
         </div>
-        <div className="flex items-center gap-2">
-          <label className="text-sm font-semibold">End:</label>
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            className="border rounded px-2 py-1"
-          />
-        </div>
-        <button
-          onClick={handleViewStats}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded disabled:opacity-50"
-          disabled={loading}
-        >
-          {loading ? 'Đang tải...' : 'View Dashboard'}
-        </button>
       </div>
 
-      {/* Layout 3 cột */}
+      {/* 📊 Layout 3 cột - Sử dụng Grid với items-stretch (mặc định) để chiều cao tự co giãn */}
       <div className="grid grid-cols-4 gap-4">
+
         {/* Cột 1 */}
         <div className="space-y-4">
           {stats
-            .filter((stat) =>
-              [
-                'PRODUCTION (KG)',
-                'NET/HOUR (KG/HOUR)',
-                'DL/NC (KG)',
-                'SCRAP (KG)',
-                'SCRAP/PRODUCTION (%)',
-                'NUMBER OF ORDER CHANGE',
-                'NUMBER OF MECHANICAL FAILURE',
-              ].includes(stat.label)
+              .filter((stat) =>
+                  [
+                    'PRODUCTION (KG)',
+                    'NET/HOUR (KG/HOUR)',
+                    'DL/NC (KG)',
+                    'SCRAP (KG)',
+                    'SCRAP/PRODUCTION (%)',
+                    'NUMBER OF ORDER CHANGE',
+                    'NUMBER OF MECHANICAL FAILURE',
+                  ].includes(stat.label)
             )
             .map((stat, idx) => (
               <StatCard key={idx} stat={stat} onClick={() => handleOpenModal(stat)} />
             ))}
         </div>
 
-        {/* Cột 2 */}
-        <div className="col-span-2 space-y-4">
-          <div className="bg-white shadow rounded p-4">
-            <h3 className="text-sm font-semibold mb-2">
-              Productions per Item (Pie)
-            </h3>
-            <ResponsiveContainer width="100%" height={400}>
-              <PieChart>
-                <Pie
-                  data={chartDataPie}
-                  dataKey="percent"
-                  nameKey="name"
-                  outerRadius={150}
-                  fill="#8884d8"
-                  label={({ percent }) => `${percent}%`}
-                >
-                  {chartDataPie.map((_, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
-                  )) as unknown as React.ReactNode}
-                </Pie>
-                <Legend />
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
+        {/* Cột 2 (Biểu đồ) */}
+        <div className="col-span-2 space-y-3">
+          {!showCharts && (
+            <div className="text-center text-gray-500 italic py-8 bg-white shadow rounded h-full flex items-center justify-center">
+              Nhấn “View Dashboard” để hiển thị biểu đồ thống kê
+            </div>
+          )}
 
-          <div className="bg-white shadow rounded p-4">
-            <h3 className="text-sm font-semibold mb-2">
-              Productions per Item (Bar)
-            </h3>
-            <ResponsiveContainer width="100%" height={380}>
-              <BarChart data={chartDataBar}>
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="value" fill="#1D4ED8" label />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+          {showCharts && (
+            <>
+              <div className="bg-white shadow rounded p-4">
+                <h3 className="text-sm font-semibold mb-2">
+                  Productions per Item (Pie)
+                </h3>
+                <ResponsiveContainer width="100%" height={400}>
+                  <PieChart>
+                    <Pie
+                      data={chartDataPie}
+                      dataKey="percent"
+                      nameKey="name"
+                      outerRadius={150}
+                      fill="#8884d8"
+                      label={({ percent }) => `${percent}%`}
+                    >
+                      {chartDataPie.map((_, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      )) as unknown as React.ReactNode}
+                    </Pie>
+                    <Legend />
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+
+              <div className="bg-white shadow rounded p-4">
+                <h3 className="text-sm font-semibold mb-2">
+                  Productions per Item (Bar)
+                </h3>
+                <ResponsiveContainer width="100%" height={480}>
+                  <BarChart data={chartDataBar}>
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Bar dataKey="value" fill="#1D4ED8" label={{ position: 'top', fill: '#1D4ED8', fontSize: 14 }} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Cột 3 */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           {stats
             .filter((stat) =>
               [
@@ -272,7 +287,8 @@ export default function MarisDashboard() {
                 'STOP TIME (HOUR)',
                 'MTTR (HOUR)',
                 'MTBF (HOUR)',
-                'SAFETY TIME (HOUR)',
+                'INCIDENT (TIMES)',
+                'ACCIDENT (TIMES)'
               ].includes(stat.label)
             )
             .map((stat, idx) => (
@@ -281,11 +297,10 @@ export default function MarisDashboard() {
         </div>
       </div>
 
-      {/* Modal */}
+      {/* 📝 Modal */}
       {modalOpen && selectedStat && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
           <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full mx-4 animate-fade-in-up transition-all duration-300 ease-out">
-            {/* Header */}
             <div className="flex justify-between items-center px-6 py-4 border-b">
               <h2 className="text-xl font-semibold text-gray-800">
                 Chi tiết: {selectedStat.label}
@@ -299,7 +314,6 @@ export default function MarisDashboard() {
               </button>
             </div>
 
-            {/* Body */}
             <div className="p-6 max-h-[70vh] overflow-auto">
               <table className="w-full text-sm border border-gray-200">
                 <thead className="bg-blue-100 text-gray-700 text-left">
@@ -327,7 +341,6 @@ export default function MarisDashboard() {
               </table>
             </div>
 
-            {/* Footer */}
             <div className="px-6 py-3 border-t flex justify-end bg-gray-50 rounded-b-xl">
               <button
                 onClick={handleCloseModal}

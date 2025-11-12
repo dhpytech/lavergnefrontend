@@ -6,9 +6,8 @@ import { ClipboardList, Clock, AlertTriangle, Box, Mail, Users } from 'lucide-re
 const infoItems = [
   { label: 'Maris', icon: <ClipboardList size={32} />, path: '/input/maris' },
   { label: 'Bagging', icon: <Clock size={32} />, path: '/input/bagging' },
-  { label: 'Metal', icon: <AlertTriangle size={32} />, path: '/input/metal' },
-  // { label: 'Safety', icon: <Box size={32} />, path: '/input/safety' },
-  // { label: 'Other', icon: <Mail size={32} />, path: '/home' },
+  { label: 'Metal', icon: <AlertTriangle size={32} />, path: '/input/mental' },
+  { label: 'Safety', icon: <Box size={32} />, path: '/input/safety' },
 ];
 
 export default function InformationPage() {
