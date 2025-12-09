@@ -6,6 +6,12 @@ import {
   ResponsiveContainer, PieChart, Pie, Cell, Legend
 } from 'recharts';
 
+// =======================================================
+// 1. IMPORT COMPONENT THỜI GIAN AN TOÀN
+// Sử dụng đường dẫn tương đối (giả định cấu trúc thư mục chuẩn)
+import SafetyDurationDisplay from '../../../components/dashboard/SafetyDurationDisplay';
+// =======================================================
+
 // Kiểu dữ liệu
 type StatType = {
   label: string;
@@ -98,8 +104,8 @@ export default function MarisDashboard() {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedStat, setSelectedStat] = useState<StatType | null>(null);
 
-  // SỬA LỖI FETCH DATA: Dùng URL trực tiếp với HTTPS://
-  const API_BASE_URL = "https://gunicorn-lavergnebackendwsgi-production.up.railway.app";
+
+  const API_BASE_URL = "http://127.0.0.1:8000";
 
   const handleViewStats = async () => {
     setLoading(true);
@@ -210,10 +216,9 @@ export default function MarisDashboard() {
             </button>
         </div>
 
-        {/* Safety Time (Right side) */}
-        <div className="text-sm font-bold text-green-700">
-            SAFETY TIMES: 1000 HOURS
-        </div>
+        {/* 🚨 Safety Time (Right side) - ĐÃ THAY THẾ BẰNG COMPONENT ĐỘNG */}
+        {/* Thay thế div tĩnh: <div className="text-sm font-bold text-green-700">SAFETY TIMES: 1000 HOURS</div> */}
+        <SafetyDurationDisplay />
       </div>
 
       {/* 📊 Layout 3 cột */}
@@ -231,6 +236,7 @@ export default function MarisDashboard() {
                     'SCRAP/PRODUCTION (%)',
                     'NUMBER OF ORDER CHANGE',
                     'NUMBER OF MECHANICAL FAILURE',
+                    'ACCIDENT (TIMES)',
                   ].includes(stat.label)
             )
             .map((stat, idx) => (
@@ -253,7 +259,7 @@ export default function MarisDashboard() {
                   Productions per Item (Pie)
                 </h3>
                 {/* Giảm height để cân bằng layout */}
-                <ResponsiveContainer width="100%" height={350}>
+                <ResponsiveContainer width="100%" height={450}>
                   <PieChart>
                     <Pie
                       data={chartDataPie}
@@ -282,7 +288,7 @@ export default function MarisDashboard() {
                   Productions per Item (Bar)
                 </h3>
                 {/* Giảm height để cân bằng layout */}
-                <ResponsiveContainer width="100%" height={350}>
+                <ResponsiveContainer width="100%" height={425}>
                   <BarChart data={chartDataBar}>
                     <XAxis dataKey="name" />
                     <YAxis />
@@ -307,7 +313,6 @@ export default function MarisDashboard() {
                 'MTTR (HOUR)',
                 'MTBF (HOUR)',
                 'INCIDENT (TIMES)',
-                'ACCIDENT (TIMES)'
               ].includes(stat.label)
             )
             .map((stat, idx) => (

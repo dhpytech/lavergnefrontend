@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { ClipboardList, Clock, AlertTriangle, Box, Mail, Users } from 'lucide-react';
 
 const infoItems = [
-  { label: 'Item Code', icon: <ClipboardList size={32} />, path: '/home/info/item-code' },
+  { label: 'Item Code', icon: <ClipboardList size={32} />, path: '/info/item-code' },
   { label: 'Stop Time', icon: <Clock size={32} />, path: '/home/info/stop-time' },
   { label: 'Production Problem', icon: <AlertTriangle size={32} />, path: '/home/info/production-problem' },
   { label: 'DLNC Case', icon: <Box size={32} />, path: '/home/info/dlnc' },

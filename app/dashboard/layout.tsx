@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Bell, Info, Database, Keyboard, ChartNoAxesCombined, FileSliders,} from 'lucide-react'; // icon chuông thông báo
+import { Bell, Info, Keyboard, ChartNoAxesCombined, FileSliders,} from 'lucide-react';
 
 const menu = [
   { label: 'INFORMATION', path: '/info/main' , icon: Info, color: 'text-blue-600'  },
@@ -87,7 +87,6 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
               Thoát
             </button>
           </div>
-
         </div>
       </header>
 
