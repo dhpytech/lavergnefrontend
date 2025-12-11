@@ -5,11 +5,11 @@ import { ClipboardList, Clock, AlertTriangle, Box, Mail, Users } from 'lucide-re
 
 const infoItems = [
   { label: 'Item Code', icon: <ClipboardList size={32} />, path: '/info/item-code' },
-  { label: 'Stop Time', icon: <Clock size={32} />, path: '/home/info/stop-time' },
-  { label: 'Production Problem', icon: <AlertTriangle size={32} />, path: '/home/info/production-problem' },
-  { label: 'DLNC Case', icon: <Box size={32} />, path: '/home/info/dlnc' },
-  { label: 'Email', icon: <Mail size={32} />, path: '/home/info/email' },
-  { label: 'Operators', icon: <Users size={32} />, path: '/home/info/operators' },
+  { label: 'Stop Time', icon: <Clock size={32} />, path: '/info/stop-time' },
+  { label: 'Production Problem', icon: <AlertTriangle size={32} />, path: '/info/production-problem' },
+  { label: 'DLNC Case', icon: <Box size={32} />, path: '/info/dlnc' },
+  { label: 'Email', icon: <Mail size={32} />, path: '/info/email' },
+  { label: 'Operators', icon: <Users size={32} />, path: '/info/operators' },
 ];
 
 export default function InformationPage() {
