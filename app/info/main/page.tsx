@@ -7,9 +7,9 @@ const infoItems = [
   { label: 'Item Code', icon: <ClipboardList size={32} />, path: '/info/item-code' },
   { label: 'Stop Time', icon: <Clock size={32} />, path: '/info/stop-time' },
   { label: 'Production Problem', icon: <AlertTriangle size={32} />, path: '/info/problems' },
-  { label: 'DLNC Case', icon: <Box size={32} />, path: '/info/dlnc' },
+  { label: 'DLNC Case', icon: <Box size={32} />, path: '/info/dlnc_case' },
   { label: 'Email', icon: <Mail size={32} />, path: '/info/mail' },
-  { label: 'Operators', icon: <Users size={32} />, path: '/info/employeee' },
+  { label: 'Operators', icon: <Users size={32} />, path: '/info/employee' },
 ];
 
 export default function InformationPage() {
