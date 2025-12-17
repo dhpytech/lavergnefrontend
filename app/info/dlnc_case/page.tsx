@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react';
 // =======================================================
 
 // ĐỊNH NGHĨA API BACKEND MỚI (Giả định: /dlnc_case/dlnc-case/)
-const API_URL = 'http://127.0.0.1:8000/dlnc_case/dlnc-case/';
+const API_URL = 'http://127.0.0.1:8000/dlnc_case/dlnc_case/';
 
 
 // Khai báo kiểu dữ liệu mà Component React mong muốn
