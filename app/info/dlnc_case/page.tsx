@@ -13,9 +13,13 @@ const API_URL = 'http://127.0.0.1:8000/dlnc_case/dlnc_case/';
 // =======================================================
 
 // ĐỊNH NGHĨA API BACKEND MỚI
+<<<<<<< HEAD
 const API_URL = 'http://127.0.0.1:8000/dlnc_case/dlnc-case/'; // Đã cập nhật theo yêu cầu
 >>>>>>> aea4fe9 (FE01)
 
+=======
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/dlnc_case/dlnc_case/`; // Đã cập nhật theo yêu cầu
+>>>>>>> e68016c (FE01)
 
 // Khai báo kiểu dữ liệu mà Component React mong muốn
 interface DlncCase {

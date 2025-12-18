@@ -19,7 +19,7 @@ interface Employee {
 
 // ĐỊNH NGHĨA API BACKEND MỚI
 // Thay thế ItemCode API bằng Employee API (Giả sử: http://127.0.0.1:8000/employee/employees/)
-const API_URL = 'http://127.0.0.1:8000/employee/employees/'; // Vui lòng cập nhật đúng URL của bạn!
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/employee/employee/`; // Vui lòng cập nhật đúng URL của bạn!
 
 
 // Khai báo kiểu dữ liệu mà Component React mong muốn
