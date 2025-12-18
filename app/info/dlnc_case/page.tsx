@@ -2,11 +2,19 @@
 import React, { useState, useEffect } from 'react';
 
 // =======================================================
+<<<<<<< HEAD
 // [CONFIG] Cấu hình API và Model MỚI: DlncCase (ĐÃ CẬP NHẬT)
 // =======================================================
 
 // ĐỊNH NGHĨA API BACKEND MỚI (Giả định: /dlnc_case/dlnc-case/)
 const API_URL = 'http://127.0.0.1:8000/dlnc_case/dlnc_case/';
+=======
+// [CONFIG] Cấu hình API và Model MỚI: DlncCase
+// =======================================================
+
+// ĐỊNH NGHĨA API BACKEND MỚI
+const API_URL = 'http://127.0.0.1:8000/dlnc_case/dlnc-case/'; // Đã cập nhật theo yêu cầu
+>>>>>>> aea4fe9 (FE01)
 
 
 // Khai báo kiểu dữ liệu mà Component React mong muốn
@@ -23,7 +31,11 @@ interface ApiDlncCase {
     dlnc_case_description: string; // Tên trường từ Django Model
 }
 
+<<<<<<< HEAD
 // Hàm chuyển đổi từ API sang Frontend (READ) (ĐÃ CẬP NHẬT)
+=======
+// Hàm chuyển đổi từ API sang Frontend (READ)
+>>>>>>> aea4fe9 (FE01)
 const mapApiToFrontend = (apiItem: ApiDlncCase): DlncCase => {
     return {
         id: apiItem.id,
@@ -32,7 +44,11 @@ const mapApiToFrontend = (apiItem: ApiDlncCase): DlncCase => {
     };
 };
 
+<<<<<<< HEAD
 // Hàm chuyển đổi từ Frontend sang API (CREATE/UPDATE) (ĐÃ CẬP NHẬT)
+=======
+// Hàm chuyển đổi từ Frontend sang API (CREATE/UPDATE)
+>>>>>>> aea4fe9 (FE01)
 const mapFrontendToApi = (feData: Omit<DlncCase, 'id'>): Omit<ApiDlncCase, 'id'> => ({
     dlnc_case_name: feData.name, // Map name -> dlnc_case_name
     dlnc_case_description: feData.description, // Map description -> dlnc_case_description
@@ -72,10 +88,17 @@ const RefreshCw = () => (
 )
 
 // =======================================================
+<<<<<<< HEAD
 // [MAIN COMPONENT] DlncCaseManager (ĐÃ ĐỔI TÊN)
 // =======================================================
 
 export default function DlncCaseManager() { // ĐÃ ĐỔI TÊN
+=======
+// [MAIN COMPONENT] DlncCaseManager
+// =======================================================
+
+export default function App() {
+>>>>>>> aea4fe9 (FE01)
   // State chứa danh sách Dlnc Case
   const [items, setItems] = useState<DlncCase[]>([]);
 
@@ -137,7 +160,11 @@ export default function DlncCaseManager() { // ĐÃ ĐỔI TÊN
   // Hàm kiểm tra tính hợp lệ cục bộ
   const validateForm = () => {
     if (!formData.name.trim() || !formData.description.trim()) {
+<<<<<<< HEAD
       setError('Tên Case và Mô tả không được để trống.'); // ĐÃ CẬP NHẬT TEXT
+=======
+      setError('Tên (Mã) và Mô tả không được để trống.');
+>>>>>>> aea4fe9 (FE01)
       return false;
     }
     // Kiểm tra trùng lặp cục bộ (Server sẽ kiểm tra lại lần cuối)
@@ -145,7 +172,11 @@ export default function DlncCaseManager() { // ĐÃ ĐỔI TÊN
       item => item.name.trim() === formData.name.trim() && item.id !== editingItem?.id
     );
     if (isDuplicate) {
+<<<<<<< HEAD
         setError(`Tên Case "${formData.name.trim()}" đã tồn tại cục bộ. Vui lòng kiểm tra lại.`); // ĐÃ CẬP NHẬT TEXT
+=======
+        setError(`Tên (Mã) Dlnc Case "${formData.name.trim()}" đã tồn tại cục bộ. Vui lòng kiểm tra lại.`);
+>>>>>>> aea4fe9 (FE01)
         return false;
     }
     return true;
@@ -168,7 +199,11 @@ export default function DlncCaseManager() { // ĐÃ ĐỔI TÊN
 
       // KIỂM TRA LỖI THEO TÊN TRƯỜNG API MỚI: dlnc_case_name
       if (errorData.dlnc_case_name && errorData.dlnc_case_name[0]) {
+<<<<<<< HEAD
           message = `Lỗi Validation: ${errorData.dlnc_case_name[0]} (Tên Dlnc Case đã bị trùng hoặc không hợp lệ).`; // ĐÃ CẬP NHẬT TÊN TRƯỜNG
+=======
+          message = `Lỗi Validation: ${errorData.dlnc_case_name[0]} (Tên Dlnc Case đã bị trùng hoặc không hợp lệ).`;
+>>>>>>> aea4fe9 (FE01)
       } else if (typeof errorData === 'object' && !Array.isArray(errorData)) {
           // Xử lý các lỗi validation chung khác
           message += Object.entries(errorData).map(([key, value]) =>
@@ -328,7 +363,11 @@ export default function DlncCaseManager() { // ĐÃ ĐỔI TÊN
         }
       } catch (err) {
         console.error("Lỗi khi xóa:", err);
+<<<<<<< HEAD
         setError("Lỗi hệ thống: Không thể xóa Dlnc Case."); // ĐÃ CẬP NHẬT TEXT
+=======
+        setError("Lỗi hệ thống: Không thể xóa Dlnc Case.");
+>>>>>>> aea4fe9 (FE01)
       } finally {
         setItemToDelete(null); // Đóng modal
         setIsLoading(false);
@@ -347,11 +386,19 @@ export default function DlncCaseManager() { // ĐÃ ĐỔI TÊN
       <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
         {editingItem ? (
             <>
+<<<<<<< HEAD
                 <EditIcon /> Chỉnh sửa Dlnc Case: <span className="text-blue-600 ml-2">{editingItem.name}</span> {/* ĐÃ CẬP NHẬT TEXT */}
             </>
         ) : (
             <>
                 <PlusIcon /> Thêm Dlnc Case Mới {/* ĐÃ CẬP NHẬT TEXT */}
+=======
+                <EditIcon /> Chỉnh sửa Dlnc Case: <span className="text-blue-600 ml-2">{editingItem.name}</span>
+            </>
+        ) : (
+            <>
+                <PlusIcon /> Thêm Dlnc Case Mới
+>>>>>>> aea4fe9 (FE01)
             </>
         )}
       </h2>
@@ -369,14 +416,22 @@ export default function DlncCaseManager() { // ĐÃ ĐỔI TÊN
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
           {/* Tên Dlnc Case (dlnc_case_name) */}
           <div>
+<<<<<<< HEAD
             <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Tên Dlnc Case (Mã)</label> {/* ĐÃ CẬP NHẬT TEXT */}
+=======
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Tên/Mã Dlnc Case</label>
+>>>>>>> aea4fe9 (FE01)
             <input
               id="name"
               name="name"
               type="text"
               value={formData.name}
               onChange={handleChange}
+<<<<<<< HEAD
               placeholder="Ví dụ: KHOAN"
+=======
+              placeholder="Ví dụ: LỖI-DINH-DƯỠNG"
+>>>>>>> aea4fe9 (FE01)
               className="w-full p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150"
               required
               disabled={isLoading}
@@ -385,20 +440,31 @@ export default function DlncCaseManager() { // ĐÃ ĐỔI TÊN
 
           {/* Mô Tả (dlnc_case_description) */}
           <div className="md:col-span-2">
+<<<<<<< HEAD
             <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">Mô Tả Chi Tiết Case</label> {/* ĐÃ CẬP NHẬT TEXT */}
+=======
+            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">Mô Tả Chi Tiết</label>
+>>>>>>> aea4fe9 (FE01)
             <input
               id="description"
               name="description"
               type="text"
               value={formData.description}
               onChange={handleChange}
+<<<<<<< HEAD
               placeholder="Mô tả chi tiết trường hợp/vụ việc Dlnc"
+=======
+              placeholder="Mô tả chi tiết trường hợp không phù hợp (DLNC)"
+>>>>>>> aea4fe9 (FE01)
               className="w-full p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150"
               required
               disabled={isLoading}
             />
           </div>
+<<<<<<< HEAD
 
+=======
+>>>>>>> aea4fe9 (FE01)
         </div>
 
           {/* Nút Action */}
@@ -446,7 +512,11 @@ export default function DlncCaseManager() { // ĐÃ ĐỔI TÊN
           <h3 className="text-xl font-bold text-gray-900">Xác Nhận Xóa</h3>
         </div>
         <p className="text-gray-700 mb-6">
+<<<<<<< HEAD
           Bạn có chắc chắn muốn xóa Dlnc Case: {/* ĐÃ CẬP NHẬT TEXT */}
+=======
+          Bạn có chắc chắn muốn xóa Dlnc Case:
+>>>>>>> aea4fe9 (FE01)
           <span className="font-semibold text-red-600 ml-1">{itemToDelete.name}</span>
           ? Hành động này không thể hoàn tác.
         </p>
@@ -477,7 +547,11 @@ export default function DlncCaseManager() { // ĐÃ ĐỔI TÊN
       {ConfirmationModal}
 
       <h1 className="text-3xl font-extrabold text-gray-900 mb-6 border-b pb-2">
+<<<<<<< HEAD
         Quản Lý Dlnc Case
+=======
+        Quản Lý Dlnc Case (Trường hợp không phù hợp)
+>>>>>>> aea4fe9 (FE01)
       </h1>
 
       {/* Form Thêm/Sửa */}
@@ -486,7 +560,11 @@ export default function DlncCaseManager() { // ĐÃ ĐỔI TÊN
       {/* Bảng Danh Sách */}
       <div className="bg-white shadow-xl rounded-xl overflow-hidden border border-gray-200">
         <div className="p-4 flex justify-between items-center bg-blue-50 border-b border-blue-100">
+<<<<<<< HEAD
             <h2 className="text-xl font-bold text-gray-800">Danh Sách Dlnc Case ({items.length} mục)</h2> {/* ĐÃ CẬP NHẬT TEXT */}
+=======
+            <h2 className="text-xl font-bold text-gray-800">Danh Sách Dlnc Case ({items.length} mục)</h2>
+>>>>>>> aea4fe9 (FE01)
              <button
                 onClick={fetchItems}
                 disabled={isLoading}
@@ -506,8 +584,13 @@ export default function DlncCaseManager() { // ĐÃ ĐỔI TÊN
                 <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-100">
                     <tr>
+<<<<<<< HEAD
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tên/Mã Dlnc Case</th> {/* ĐÃ CẬP NHẬT TEXT */}
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mô Tả Chi Tiết Case</th> {/* ĐÃ CẬP NHẬT TEXT */}
+=======
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tên/Mã Dlnc Case</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mô Tả Chi Tiết</th>
+>>>>>>> aea4fe9 (FE01)
                     <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Hành Động</th>
                     </tr>
                 </thead>
@@ -515,7 +598,11 @@ export default function DlncCaseManager() { // ĐÃ ĐỔI TÊN
                     {items.length === 0 ? (
                     <tr>
                         <td colSpan={3} className="px-6 py-4 whitespace-nowrap text-center text-gray-500 italic">
+<<<<<<< HEAD
                         {error ? 'Không thể tải dữ liệu.' : 'Chưa có Dlnc Case nào được thêm.'} {/* ĐÃ CẬP NHẬT TEXT */}
+=======
+                        {error ? 'Không thể tải dữ liệu.' : 'Chưa có Dlnc Case nào được thêm.'}
+>>>>>>> aea4fe9 (FE01)
                         </td>
                     </tr>
                     ) : (
