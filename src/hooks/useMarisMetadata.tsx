@@ -1,10 +1,12 @@
+// src/hooks/useMarisMetadata.ts
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 export const useMarisMetadata = () => {
   const [data, setData] = useState({
     employees: [] as any[],
     productCodes: [] as string[],
-    stopCodes: ["M01 - Mechanical", "E01 - Electrical", "P01 - Power"],
+    stopCodes: ["S01 - Mechanical", "S02 - Electrical", "S03 - Setup"],
     problemCodes: ["Q01 - Color", "Q02 - Black Spot", "Q03 - Moisture"],
   });
   const [loading, setLoading] = useState(true);
@@ -12,27 +14,20 @@ export const useMarisMetadata = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
         const [empRes, prodRes] = await Promise.all([
-          fetch(`${baseUrl}/employee/employee/`),
-          fetch(`${baseUrl}/itemcode/item-code/`)
+          axios.get('http://127.0.0.1:8000/employee/employee/'),
+          axios.get('http://127.0.0.1:8000/itemcode/items-code/')
         ]);
 
-        const employees = empRes.ok ? await empRes.json() : [];
-        const products = prodRes.ok ? await prodRes.json() : [];
-
         setData(prev => ({
           ...prev,
-          employees,
-          productCodes: products.map((p: any) => p.code || p.item_code)
+          // Sử dụng employee_name từ API của bạn
+          employees: empRes.data,
+          // Sử dụng item_name từ API của bạn
+          productCodes: prodRes.data.map((item: any) => item.item_name)
         }));
       } catch (error) {
-        console.error("Sử dụng dữ liệu Fallback");
-        setData(prev => ({
-          ...prev,
-          employees: [{ id: 1, name: "Operator Default" }],
-          productCodes: ["PROD-001", "PROD-002"]
-        }));
+        console.error("Lỗi API, kiểm tra CORS hoặc Server:", error);
       } finally {
         setLoading(false);
       }

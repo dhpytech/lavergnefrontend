@@ -1,39 +1,53 @@
+// src/components/maris/DynamicSection.tsx
 'use client'
 import { useFieldArray, Control, UseFormRegister } from 'react-hook-form';
-import { MarisFormValues } from '@/src/schemas/marisSchema';
+import { MultiMarisValues } from '@/src/schemas/marisSchema';
 import { Plus, Minus } from 'lucide-react';
 
 interface Props {
   title: string;
-  name: "stop_time_data" | "problems";
-  control: Control<MarisFormValues>;
-  register: UseFormRegister<MarisFormValues>;
+  path: any; // Sử dụng any để tránh lỗi Type Assignable lồng nhau
+  type: "stop_time_data" | "problems";
+  control: Control<MultiMarisValues>;
+  register: UseFormRegister<MultiMarisValues>;
   options: string[];
 }
 
-export const DynamicSection = ({ title, name, control, register, options }: Props) => {
-  const { fields, append, remove } = useFieldArray({ control, name: name as any });
+export const DynamicSection = ({ title, path, type, control, register, options }: Props) => {
+  const { fields, append, remove } = useFieldArray({ control, name: path });
+  const codeKey = type === 'stop_time_data' ? 'stopCode' : 'problemCode';
 
   return (
-    <div className="bg-white p-5 rounded-[2rem] border border-slate-200 shadow-sm flex flex-col h-full">
-      <div className="flex justify-between items-center mb-4 border-b pb-2">
-        <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{title}</h3>
-        <button type="button" onClick={() => append({ [name === 'stop_time_data' ? 'stopCode' : 'problemCode']: '', duration: 0 } as any)}
-          className="bg-slate-900 text-white p-1 rounded-lg hover:bg-blue-600 transition-colors">
-          <Plus size={14} />
+    <div className="bg-white p-4 rounded-xl border border-slate-300 flex flex-col h-full shadow-sm">
+      <div className="flex justify-between items-center mb-3 border-b border-slate-100 pb-2">
+        <h3 className="text-[11px] font-bold text-slate-800 uppercase tracking-tighter">{title}</h3>
+        <button type="button" onClick={() => append({ [codeKey]: '', duration: 0 })}
+          className="bg-slate-100 p-1 rounded border border-slate-300 hover:bg-slate-200">
+          <Plus size={14} className="text-slate-600" />
         </button>
       </div>
-      <div className="space-y-3 max-h-[200px] overflow-y-auto pr-2">
+      <div className="space-y-2 max-h-[180px] overflow-y-auto pr-1">
         {fields.map((field, index) => (
           <div key={field.id} className="flex gap-2 items-center">
-            <select {...register(`${name}.${index}.${name === 'stop_time_data' ? 'stopCode' : 'problemCode'}` as any)}
-              className="flex-1 p-2 bg-slate-50 border rounded-xl text-xs font-bold outline-none">
-              <option value="">Chọn mã...</option>
-              {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+            <span className="text-[10px] text-slate-400 w-4">{index + 1}</span>
+            <select
+              {...register(`${path}.${index}.${codeKey}` as any)}
+              className="flex-1 p-1.5 bg-white border border-slate-300 rounded text-[11px] outline-none"
+            >
+              <option value="">-- Dropdown --</option>
+              {options.map((opt) => (
+                <option key={`${field.id}-${opt}`} value={opt}>{opt}</option>
+              ))}
             </select>
-            <input type="number" placeholder="Phút" {...register(`${name}.${index}.duration` as any)}
-              className="w-16 p-2 bg-slate-50 border rounded-xl text-xs text-center font-bold" />
-            <button type="button" onClick={() => remove(index)} className="text-slate-300 hover:text-red-500"><Minus size={18} /></button>
+            <input
+              type="number"
+              placeholder="Hour/Time"
+              {...register(`${path}.${index}.duration` as any)}
+              className="w-20 p-1.5 bg-white border border-slate-300 rounded text-[11px] text-center"
+            />
+            <button type="button" onClick={() => remove(index)} className="text-slate-300 hover:text-red-500">
+              <Minus size={16} />
+            </button>
           </div>
         ))}
       </div>
