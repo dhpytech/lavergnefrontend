@@ -1,4 +1,4 @@
-// src/components/maris/MarisFormUnit.tsx
+// src/components/entries/MarisFormUnit.tsx
 'use client'
 import React from 'react';
 import { useFieldArray, Control, UseFormRegister, useWatch } from 'react-hook-form';
@@ -105,7 +105,7 @@ export function MarisFormUnit({ index, control, register, onRemove, metadata }: 
               })}
             </tbody>
           </table>
-          <button type="button" onClick={() => append({ productCode: '', goodPro: 0, dlnc: 0, scrap: 0, reject: 0, screenChanger: 0, visLab: 0, outputSetting: 0 })}
+          <button type="button" onClick={() => append({ productCode: '', goodPro: 0, dlnc: 0, scrap: 0, reject: 0, screenChanger: 0, visLab: 0, outputSetting: 0 } as any)}
             className="mt-3 px-4 py-1.5 bg-slate-800 text-white rounded text-[10px] uppercase font-bold hover:bg-black transition-colors">
             + Add Row
           </button>

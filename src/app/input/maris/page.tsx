@@ -1,4 +1,4 @@
-// src/app/maris-form/page.tsx
+// src/app/entries-form/page.tsx
 'use client'
 import React from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';

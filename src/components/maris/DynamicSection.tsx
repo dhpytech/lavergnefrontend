@@ -1,4 +1,4 @@
-// src/components/maris/DynamicSection.tsx
+// src/components/entries/DynamicSection.tsx
 'use client'
 import { useFieldArray, Control, UseFormRegister } from 'react-hook-form';
 import { MultiMarisValues } from '@/src/schemas/marisSchema';
