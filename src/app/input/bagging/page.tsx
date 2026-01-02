@@ -63,7 +63,7 @@ export default function BaggingPage() {
           <div className="space-y-6">
             {fields.map((field, index) => (
               <BaggingFormUnit
-                key={field.id} // Giải quyết lỗi Unique Key
+                key={field.id}
                 index={index}
                 control={control}
                 register={register}

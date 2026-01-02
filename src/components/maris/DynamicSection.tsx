@@ -16,12 +16,12 @@ interface Props {
 export const DynamicSection = ({ title, path, type, control, register, options }: Props) => {
   const { fields, append, remove } = useFieldArray({ control, name: path });
   const codeKey = type === 'stop_time_data' ? 'stopCode' : 'problemCode';
-
+  const codeName = type === 'stop_time_data' ? 'Select StopTime' : 'Select Problem';
   return (
     <div className="bg-white p-4 rounded-xl border border-slate-300 flex flex-col h-full shadow-sm">
       <div className="flex justify-between items-center mb-3 border-b border-slate-100 pb-2">
         <h3 className="text-[11px] font-bold text-slate-800 uppercase tracking-tighter">{title}</h3>
-        <button type="button" onClick={() => append({ [codeKey]: '', duration: 0 })}
+        <button type="button" onClick={() => append({ [codeKey]: '', duration: 0 } as any)}
           className="bg-slate-100 p-1 rounded border border-slate-300 hover:bg-slate-200">
           <Plus size={14} className="text-slate-600" />
         </button>
@@ -34,7 +34,7 @@ export const DynamicSection = ({ title, path, type, control, register, options }
               {...register(`${path}.${index}.${codeKey}` as any)}
               className="flex-1 p-1.5 bg-white border border-slate-300 rounded text-[11px] outline-none"
             >
-              <option value="">-- Dropdown --</option>
+              <option value="">{codeName}</option>
               {options.map((opt) => (
                 <option key={`${field.id}-${opt}`} value={opt}>{opt}</option>
               ))}

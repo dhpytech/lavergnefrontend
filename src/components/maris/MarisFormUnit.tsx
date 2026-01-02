@@ -1,10 +1,10 @@
-// src/components/entries/MarisFormUnit.tsx
 'use client'
 import React from 'react';
 import { useFieldArray, Control, UseFormRegister, useWatch } from 'react-hook-form';
 import { Plus, Minus, Trash2, Calendar, User, Clock } from 'lucide-react';
 import { MultiMarisValues } from '@/src/schemas/marisSchema';
 import { DynamicSection } from './DynamicSection';
+import {MarisSelect} from "@/src/components/maris/MarisSelect";
 
 interface Props {
   index: number;
@@ -12,11 +12,15 @@ interface Props {
   register: UseFormRegister<MultiMarisValues>;
   onRemove: (index: number) => void;
   metadata: any;
-}
+};
+
+
+
 
 export function MarisFormUnit({ index, control, register, onRemove, metadata }: Props) {
   const { fields, append, remove } = useFieldArray({ control, name: `units.${index}.production_data` as any });
   const watchProd = useWatch({ control, name: `units.${index}.production_data` as any });
+  const watchShift = useWatch({ control, name: `units.${index}.shift` as any });
 
   return (
     <div className="bg-[#E2E8F0] p-6 rounded-lg border-2 border-slate-400 mb-10 relative shadow-md">
@@ -24,7 +28,6 @@ export function MarisFormUnit({ index, control, register, onRemove, metadata }: 
         <Trash2 size={16} />
       </button>
 
-      {/* Header Info - Giống bản vẽ */}
       <div className="flex flex-wrap items-center gap-8 mb-6 bg-white/50 p-4 rounded-lg border border-slate-300">
         <div className="flex items-center gap-3 border-r border-slate-400 pr-8">
           <Calendar size={20} className="text-slate-700" />
@@ -33,7 +36,7 @@ export function MarisFormUnit({ index, control, register, onRemove, metadata }: 
         <div className="flex items-center gap-3 border-r border-slate-400 pr-8">
           <User size={20} className="text-slate-700" />
           <select {...register(`units.${index}.employee` as any)} className="bg-white border border-slate-400 rounded px-3 py-1 text-sm font-bold outline-none min-w-[150px]">
-            <option value="">Dropdown</option>
+            <option value="">Select Operator</option>
             {metadata.employees.map((e: any) => (
               <option key={`unit-${index}-emp-${e.employee_id}`} value={e.employee_name}>{e.employee_name}</option>
             ))}
@@ -45,7 +48,19 @@ export function MarisFormUnit({ index, control, register, onRemove, metadata }: 
             <option value="DAY">CA NGÀY</option>
             <option value="NIGHT">CA ĐÊM</option>
           </select>
+
+
         </div>
+      <MarisSelect
+            register={register(`units.${index}.shift` as any)}
+            watchValue={watchShift}
+            placeholder={"Select Shift"}
+              options={[
+                { value: 'DAY', label: 'CA NGÀY' },
+                { value: 'NIGHT', label: 'CA ĐÊM' }
+              ]}
+              className="min-w-[120px] bg-slate-50" // Thêm nền xám nhẹ cho header
+                />
       </div>
 
       {/* Production Table - Bổ sung đầy đủ trường & Output Setting */}
@@ -71,42 +86,82 @@ export function MarisFormUnit({ index, control, register, onRemove, metadata }: 
               {fields.map((field, idx) => {
                 const total = (Number(watchProd?.[idx]?.goodPro) || 0) + (Number(watchProd?.[idx]?.reject) || 0);
                 return (
-                  <tr key={field.id}>
-                    <td className="py-2">
-                      <select {...register(`units.${index}.production_data.${idx}.productCode` as any)} className="w-full border border-slate-300 rounded p-1">
-                        <option value="">Dropdown</option>
-                        {metadata.productCodes.map((code: string) => (
-                          <option key={`${field.id}-${code}`} value={code}>{code}</option>
-                        ))}
-                      </select>
-                    </td>
-                    <td className="p-1"><input type="number" {...register(`units.${index}.production_data.${idx}.goodPro` as any)} className="w-full border border-slate-300 rounded p-1 text-center" placeholder="Input text" /></td>
-                    <td className="p-1"><input type="number" {...register(`units.${index}.production_data.${idx}.dlnc` as any)} className="w-full border border-slate-300 rounded p-1 text-center" placeholder="Input text" /></td>
-                    <td className="p-1">
-                      <select {...register(`units.${index}.production_data.${idx}.case` as any)} className="w-full border border-slate-300 rounded p-1">
-                        <option value="Case A">Case A</option>
-                        <option value="Case B">Case B</option>
-                      </select>
-                    </td>
-                    <td className="p-1 text-center font-black bg-slate-50 border border-slate-200">{total}</td>
-                    <td className="p-1"><input type="number" {...register(`units.${index}.production_data.${idx}.reject` as any)} className="w-full border border-slate-300 rounded p-1 text-center" placeholder="Input text" /></td>
-                    <td className="p-1"><input type="number" {...register(`units.${index}.production_data.${idx}.scrap` as any)} className="w-full border border-slate-300 rounded p-1 text-center" placeholder="Input text" /></td>
-                    <td className="p-1"><input type="number" {...register(`units.${index}.production_data.${idx}.screenChanger` as any)} className="w-full border border-slate-300 rounded p-1 text-center" placeholder="Input text" /></td>
-                    <td className="p-1"><input type="number" {...register(`units.${index}.production_data.${idx}.visLab` as any)} className="w-full border border-blue-400 rounded p-1 text-center" placeholder="Input text" /></td>
-                    <td className="p-1 bg-blue-50/50">
-                      <input type="number" {...register(`units.${index}.production_data.${idx}.outputSetting` as any)}
-                        className="w-full border border-blue-400 rounded p-1 text-center font-bold text-blue-800 bg-white" placeholder="Input text" />
-                    </td>
-                    <td className="p-1 text-center">
-                      <button type="button" onClick={() => remove(idx)} className="text-slate-300 hover:text-red-500"><Minus size={18}/></button>
-                    </td>
-                  </tr>
+                    <tr key={field.id}>
+                        <td className="py-2">
+                            <select {...register(`units.${index}.production_data.${idx}.productCode` as any)}
+                                    className="w-full border border-slate-300 rounded p-1">
+                                <option value="">Select ItemCode</option>
+                                {metadata.productCodes.map((code: string) => (
+                                    <option key={`${field.id}-${code}`} value={code}>{code}</option>
+                                ))}
+                            </select>
+                        </td>
+                        <td className="p-1"><input
+                            type="number" {...register(`units.${index}.production_data.${idx}.goodPro` as any)}
+                            className="w-full border border-slate-300 rounded p-1 text-center"
+                            placeholder="Input text"/></td>
+                        <td className="p-1"><input
+                            type="number" {...register(`units.${index}.production_data.${idx}.dlnc` as any)}
+                            className="w-full border border-slate-300 rounded p-1 text-center"
+                            placeholder="Input text"/></td>
+                        <td className="p-1">
+                            <select {...register(`units.${index}.production_data.${idx}.dlnc_case` as any)}
+                                    className="w-full border border-slate-300 rounded p-1">
+                                <option value="">Select Case</option>
+                                {metadata.dlnc_case.map((code: string) => (
+                                    <option key={`${field.id}-${code}`} value={code}>{code}</option>
+                                ))}
+                            </select>
+                        </td>
+
+                        <td className="p-1">
+                            <div className="w-full h-[27px] flex items-center justify-center bg-blue-50 border border-blue-300 rounded text-[12px] font-black text-blue-900 transition-colors hover:bg-blue-100">
+                                {total.toLocaleString()}
+                            </div>
+                        </td>
+
+                        <td className="p-1"><input
+                            type="number" {...register(`units.${index}.production_data.${idx}.reject` as any)}
+                            className="w-full border border-slate-300 rounded p-1 text-center"
+                            placeholder="Input text"/></td>
+                        <td className="p-1"><input
+                            type="number" {...register(`units.${index}.production_data.${idx}.scrap` as any)}
+                            className="w-full border border-slate-300 rounded p-1 text-center"
+                            placeholder="Input text"/></td>
+                        <td className="p-1"><input
+                            type="number" {...register(`units.${index}.production_data.${idx}.screenChanger` as any)}
+                            className="w-full border border-slate-300 rounded p-1 text-center"
+                            placeholder="Input text"/></td>
+                        <td className="p-1"><input
+                            type="number" {...register(`units.${index}.production_data.${idx}.visLab` as any)}
+                            className="w-full border border-blue-400 rounded p-1 text-center" placeholder="Input text"/>
+                        </td>
+                        <td className="p-1 bg-blue-50/50">
+                            <input
+                                type="number" {...register(`units.${index}.production_data.${idx}.outputSetting` as any)}
+                                className="w-full border border-blue-400 rounded p-1 text-center font-bold text-blue-800 bg-white"
+                                placeholder="Input text"/>
+                        </td>
+                        <td className="p-1 text-center">
+                            <button type="button" onClick={() => remove(idx)}
+                                    className="text-slate-300 hover:text-red-500"><Minus size={18}/></button>
+                        </td>
+                    </tr>
                 )
               })}
             </tbody>
           </table>
-          <button type="button" onClick={() => append({ productCode: '', goodPro: 0, dlnc: 0, scrap: 0, reject: 0, screenChanger: 0, visLab: 0, outputSetting: 0 } as any)}
-            className="mt-3 px-4 py-1.5 bg-slate-800 text-white rounded text-[10px] uppercase font-bold hover:bg-black transition-colors">
+            <button type="button" onClick={() => append({
+                productCode: '',
+                goodPro: 0,
+                dlnc: 0,
+                scrap: 0,
+                reject: 0,
+                screenChanger: 0,
+                visLab: 0,
+                outputSetting: 0
+            } as any)}
+                    className="mt-3 px-4 py-1.5 bg-slate-800 text-white rounded text-[10px] uppercase font-bold hover:bg-black transition-colors">
             + Add Row
           </button>
         </div>

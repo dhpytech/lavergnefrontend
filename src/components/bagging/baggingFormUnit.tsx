@@ -40,7 +40,7 @@ export default function BaggingFormUnit({ index, control, register, onRemove, me
           <select {...register(`entries.${index}.employee_1` as any)} className="outline-none text-[11px] w-full font-bold">
             <option value="">Employee 1</option>
             {metadata.employees?.map((e: any) => (
-              <option key={e.id} value={e.employee_name}>{e.employee_name}</option> // Key unique
+              <option key={e.id || e.employee_name} value={e.employee_name}>{e.employee_name}</option> // Key unique
             ))}
           </select>
         </div>
@@ -51,7 +51,7 @@ export default function BaggingFormUnit({ index, control, register, onRemove, me
           <select {...register(`entries.${index}.employee_2` as any)} className="outline-none text-[11px] w-full font-bold">
             <option value="">Employee 2</option>
             {metadata.employees?.map((e: any) => (
-              <option key={e.id} value={e.employee_name}>{e.employee_name}</option>
+              <option key={e.id || e.employee_name} value={e.employee_name}>{e.employee_name}</option>
             ))}
           </select>
         </div>

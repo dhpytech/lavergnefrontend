@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react';
 // =======================================================
 
 // ĐỊNH NGHĨA API BACKEND MỚI
-const API_URL = 'http://127.0.0.1:8000/dlnc_case/dlnc-case/'; // Đã cập nhật theo yêu cầu
+const API_URL = 'http://127.0.0.1:8000/dlnc_case/dlnc_case/'; // Đã cập nhật theo yêu cầu
 
 
 // Khai báo kiểu dữ liệu mà Component React mong muốn
@@ -359,7 +359,7 @@ export default function App() {
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 text-sm" role="alert">
           <div className="flex items-start">
-            <AlertTriangle className="h-5 w-5 mr-3 mt-1" />
+            <AlertTriangle />
             <span>{error}</span>
           </div>
         </div>
@@ -441,7 +441,7 @@ export default function App() {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-sm p-6 transform transition-all duration-300">
         <div className="flex items-center space-x-3 mb-4">
-          <AlertTriangle className="text-red-500" />
+          <AlertTriangle/>
           <h3 className="text-xl font-bold text-gray-900">Xác Nhận Xóa</h3>
         </div>
         <p className="text-gray-700 mb-6">

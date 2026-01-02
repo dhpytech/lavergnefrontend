@@ -8,17 +8,19 @@ export const useMarisMetadata = () => {
     productCodes: [] as string[],
     stopCodes: [],
     problemCodes: [],
+    dlnc_case: [],
   });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [empRes, prodRes,stopRes,problemRes] = await Promise.all([
+        const [empRes, prodRes,stopRes,problemRes,caseRes] = await Promise.all([
           axios.get('http://127.0.0.1:8000/employee/employee/'),
           axios.get('http://127.0.0.1:8000/itemcode/items-code/'),
           axios.get('http://127.0.0.1:8000/stoptime/stop-time/'),
           axios.get('http://127.0.0.1:8000/problem/problems/'),
+          axios.get('http://127.0.0.1:8000/dlnc_case/dlnc_case/'),
         ]);
 
         setData(prev => ({
@@ -29,6 +31,7 @@ export const useMarisMetadata = () => {
           productCodes: prodRes.data.map((item: any) => item.item_name),
           stopCodes: stopRes.data.map((item: any)=> item.stop_time_name),
           problemCodes: problemRes.data.map((item:any)=> item.problem_code),
+          dlnc_case: caseRes.data.map((item:any)=> item.dlnc_case_name),
         }));
       } catch (error) {
         console.error("Lỗi API, kiểm tra CORS hoặc Server:", error);

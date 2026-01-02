@@ -18,9 +18,9 @@ export default function GlobalMarisPage() {
         stop_time_data: [], problems: []
       }]
     }
-  });
+  } as any);
 
-  const { fields, append, remove } = useFieldArray({ control, name: "units" });
+  const { fields, append, remove } = useFieldArray({ control, name: "units" } as any);
 
   const onFinalSubmit = async (data: MultiMarisValues) => {
     // Logic gửi dữ liệu qua Axios đã bàn ở trên
@@ -73,7 +73,7 @@ export default function GlobalMarisPage() {
                 date: new Date().toISOString().split('T')[0], employee: '', shift: 'DAY',
                 production_data: [{ productCode: '', goodPro: 0, dlnc: 0, scrap: 0, reject: 0, screenChanger: 0, visLab: 0, outputSetting: 0 }],
                 stop_time_data: [], problems: []
-              })}
+              }as any)}
               className="flex items-center gap-2 px-6 py-3 bg-white border-2 border-slate-900 text-slate-900 rounded-xl font-black text-xs uppercase hover:bg-slate-900 hover:text-white transition-all shadow-sm"
             >
               <Plus size={16} /> Add Unit
