@@ -8,8 +8,7 @@ import {
 
 // =======================================================
 // 1. IMPORT COMPONENT THỜI GIAN AN TOÀN
-// Sử dụng đường dẫn tương đối (giả định cấu trúc thư mục chuẩn)
-import SafetyDurationDisplay from '../../../components/dashboard/SafetyDurationDisplay';
+import SafetyDurationDisplay from '@/src/components/dashboard/SafetyDurationDisplay';
 // =======================================================
 
 // Kiểu dữ liệu
