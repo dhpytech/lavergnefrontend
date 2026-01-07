@@ -113,7 +113,7 @@ export default function MarisDashboard() {
       const query = `start_date=${startDate}&end_date=${endDate}&shift=${shiftType}`;
 
       // SỬA: Lệnh fetch sử dụng URL trực tiếp có HTTPS://
-      const res = await fetch(`${API_BASE_URL}/dashboard/maris/?${query}`);
+      const res = await fetch(`${API_BASE_URL}/entries/maris/?${query}`);
 
       if (!res.ok) {
           // Xử lý lỗi chi tiết hơn nếu response không OK (ví dụ: 404, 500)

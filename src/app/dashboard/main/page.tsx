@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { ClipboardList, Clock, AlertTriangle, Box, Mail, Users } from 'lucide-react';
 
 const infoItems = [
-  { label: 'MARIS DASHBOARD', icon: <ClipboardList size={32} />, path: '/dashboard/form-db' },
+  { label: 'MARIS DASHBOARD', icon: <ClipboardList size={32} />, path: '/dashboard/maris-db' },
   { label: 'BAGGING DASHBOARD', icon: <ClipboardList size={32} />, path: '/dashboard/bagging-db' },
   { label: 'METAL DASHBOARD', icon: <ClipboardList size={32} />, path: '/dashboard/metal-db' },
 ];
