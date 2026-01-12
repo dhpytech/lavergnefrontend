@@ -11,7 +11,7 @@ interface FormattedDuration {
 }
 
 interface DurationData {
-  formatted_time: string; // Ví dụ: "130816 hours: 30 minutes"
+  formatted_time: string;
 }
 
 const API_DURATION_URL = `${process.env.NEXT_PUBLIC_API_URL}/safety/duration/`;

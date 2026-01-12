@@ -104,18 +104,14 @@ export default function MarisDashboard() {
   const [selectedStat, setSelectedStat] = useState<StatType | null>(null);
 
 
-  const API_BASE_URL = "http://127.0.0.1:8000";
-
+  const API_BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}/entries/maris/`
   const handleViewStats = async () => {
     setLoading(true);
     try {
-      const query = `start_date=${startDate}&end_date=${endDate}&shift=${shiftType}`;
+      const query = `start=${startDate}&end=${endDate}&shift=${shiftType}`;
 
-      // SỬA: Lệnh fetch sử dụng URL trực tiếp có HTTPS://
-      const res = await fetch(`${API_BASE_URL}/entries/maris/?${query}`);
-
+      const res = await fetch(`${API_BASE_URL}?${query}`);
       if (!res.ok) {
-          // Xử lý lỗi chi tiết hơn nếu response không OK (ví dụ: 404, 500)
           const errorText = await res.text();
           console.error("API Error Response Status:", res.status, res.statusText);
           console.error("API Error Detail:", errorText);
