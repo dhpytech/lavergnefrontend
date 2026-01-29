@@ -35,7 +35,7 @@ export default function DowntimeTable({ records }: { records: any[] }) {
                 </span>
               </td>
               <td className="p-4 font-bold text-gray-700">{item.stopType}</td>
-              <td className="p-4 text-right font-mono font-bold text-red-600">{item.hours.toFixed(2)}</td>
+              <td className="p-4 text-right font-mono font-bold text-red-600">{item.hours}</td>
               <td className="p-4 text-xs text-gray-500 italic max-w-xs truncate">
                 {item.employee} - {item.comment || "No logs"}
               </td>

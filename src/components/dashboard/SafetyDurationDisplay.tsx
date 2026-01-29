@@ -72,7 +72,7 @@ export default function SafetyDurationDisplay() {
       {/* 2. Hiển thị Giờ */}
       <div className="flex flex-col items-center bg-gray-100/70 rounded-md px-2 py-1 border border-gray-300 shadow-inner min-w-[70px]">
           <span className="text-xl md:text-2xl font-black text-blue-600 leading-none tabular-nums">
-              {isLoading ? '...' : duration.hours}
+              {isLoading ? '...' : Number(duration?.hours || 0).toLocaleString('en-US')}
           </span>
           <span className="text-[10px] text-gray-500 font-medium leading-none mt-0.5 uppercase">Hour</span>
       </div>

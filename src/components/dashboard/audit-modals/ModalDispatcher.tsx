@@ -1,17 +1,42 @@
+// components/dashboard/audit-modals/ModalDispatcher.tsx
+import ModalContainer from "./ModalContainer";
 import ProductionTable from "./tables/ProductionTable";
 import DowntimeTable from "./tables/DowntimeTable";
 import ScrapTable from "./tables/ScrapTable";
 
-const TABLE_MAP: Record<string, any> = {
-  "SCRAP": ScrapTable,
-  "REJECT": ScrapTable,
-  "PRODUCTION": ProductionTable,
-  "STOP TIME": DowntimeTable,
-};
+export default function ModalDispatcher({ label, records, isOpen, onClose, globalDates, currentShift }: any) {
+  if (!isOpen) return null;
 
-export default function ModalDispatcher({ label, records }: { label: string; records: any[] }) {
-  const key = Object.keys(TABLE_MAP).find(k => label.toUpperCase().includes(k));
-  const TableComponent = key ? TABLE_MAP[key] : ProductionTable;
+  // ✅ Hàm logic để quyết định bảng nào sẽ được hiển thị
+  const renderSelectedTable = () => {
+    const title = label?.toUpperCase() || "";
 
-  return <TableComponent records={records} />;
+    if (title.includes("PRODUCTION")) {
+      return <ProductionTable />;
+    }
+
+    if (title.includes("STOP TIME (HOUR)")) {
+      return <DowntimeTable />;
+    }
+
+    if (title.includes("SCRAP")) {
+      return <ScrapTable />;
+    }
+
+    // Mặc định trả về Production nếu không khớp cái nào
+    return <ProductionTable />;
+  };
+
+  return (
+    <ModalContainer
+      label={label}
+      onClose={onClose}
+      initialDates={globalDates}
+      initialShift={currentShift}
+      rawRecords={records}
+    >
+      {/* ✅ Render bảng động dựa trên label */}
+      {renderSelectedTable()}
+    </ModalContainer>
+  );
 }
