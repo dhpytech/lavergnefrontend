@@ -20,7 +20,7 @@ export default function MarisDashboard() {
   const handleFetch = async () => {
     setLoading(true);
     try {
-      const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8000';
+      const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://gunicorn-lavergnebackendwsgi-production.up.railway.app';
       const res = await fetch(`${BASE_URL}/dashboard/maris/?start=${filters.start}&end=${filters.end}`);
       if (!res.ok) throw new Error("Server Error");
       const json = await res.json();
