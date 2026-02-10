@@ -397,13 +397,15 @@ export default function MailAddressManager() {
       </h2>
 
       {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 text-sm" role="alert">
-          <AlertTriangle className="inline h-5 w-5 mr-2" />
-          {error}
-        </div>
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 text-sm" role="alert">
+              <div className="text-red-500">
+                  <AlertTriangle/>
+              </div>
+              {error}
+          </div>
       )}
 
-      <form onSubmit={editingItem ? handleUpdateItem : handleAddItem} className="space-y-4">
+        <form onSubmit={editingItem ? handleUpdateItem : handleAddItem} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
 
           {/* Địa Chỉ Email */}

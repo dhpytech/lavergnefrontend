@@ -361,8 +361,10 @@ export default function App() {
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 text-sm" role="alert">
           <div className="flex items-start">
-            <AlertTriangle className="h-5 w-5 mr-3 mt-1" />
-            <span>{error}</span>
+              <div className="text-red-500">
+                  <AlertTriangle/>
+              </div>
+              <span>{error}</span>
           </div>
         </div>
       )}
