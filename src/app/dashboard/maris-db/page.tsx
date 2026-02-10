@@ -164,7 +164,7 @@ export default function MarisDashboard() {
                           innerRadius={80}
                           outerRadius={110}
                           paddingAngle={5}
-                          label={({ percent }) => `${((percent || 0) * 100).toFixed(2)}%`}
+                          label={({name, percent}) => `${(percent * 100).toFixed(2)}%`}
                       >
                         {data?.charts?.pie_chart?.map((_: any, i: number) => (
                             <Cell key={i} fill={COLORS[i % COLORS.length]} strokeWidth={0}/>
