@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8000';
-const API_URL = `${BASE_URL}/employee/employee/`;
+const API_URL = 'https://gunicorn-lavergnebackendwsgi-production.up.railway.app/employee/employee/';
 
 interface Employee {
   employeeId: string;
