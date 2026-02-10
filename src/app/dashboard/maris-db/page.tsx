@@ -141,7 +141,7 @@ export default function MarisDashboard() {
                             dataKey="volume"
                             position="top"
                             offset={12}
-                            formatter={(val: number) => val.toLocaleString('en-US')}
+                            formatter={(val: any) => (typeof val === 'number' ? val.toLocaleString('en-US') : val)}
                             style={{fontSize: '10px', fontWeight: '800', fill: '#4f46e5'}}
                         />
                       </Bar>
