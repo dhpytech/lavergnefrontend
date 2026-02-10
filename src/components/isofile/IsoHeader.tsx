@@ -2,7 +2,7 @@
 
 import { Calendar, RefreshCcw, FileSpreadsheet, Clock } from 'lucide-react';
 
-export default function IsoHeader({ filters, setFilters, onRefresh, loading }: any) {
+export default function IsoHeader({ filters, setFilters, onRefresh, loading, onExport }: any) {
   return (
     <div className="bg-[#e2e8f0] p-6 rounded-[2rem] border border-slate-300 shadow-sm">
       <div className="flex items-center gap-3 mb-6">
@@ -54,7 +54,7 @@ export default function IsoHeader({ filters, setFilters, onRefresh, loading }: a
           View Report
         </button>
 
-        <button className="bg-[#059669] hover:bg-emerald-700 text-white px-8 py-3 rounded-2xl text-[10px] font-black shadow-lg flex items-center gap-2 ml-auto uppercase transition-all active:scale-95">
+        <button onClick={onExport} className="bg-[#059669] hover:bg-emerald-700 text-white px-8 py-3 rounded-2xl text-[10px] font-black shadow-lg flex items-center gap-2 ml-auto uppercase transition-all active:scale-95">
           <FileSpreadsheet className="w-3.5 h-3.5" />
           Export Excel
         </button>

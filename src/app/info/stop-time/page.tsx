@@ -6,7 +6,8 @@ import React, { useState, useEffect } from 'react';
 // =======================================================
 
 // ĐỊNH NGHĨA API BACKEND MỚI
-const API_URL = 'http://127.0.0.1:8000/stoptime/stop-time/';
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8000';
+const API_URL = `${BASE_URL}/stoptime/stop-time/`;
 
 
 // Khai báo kiểu dữ liệu mà Component React mong muốn

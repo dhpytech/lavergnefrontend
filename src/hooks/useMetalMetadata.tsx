@@ -12,9 +12,10 @@ export const useMetalMetadata = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8000';
         const [empRes, prodRes] = await Promise.all([
-          axios.get('http://127.0.0.1:8000/employee/employee/'),
-          axios.get('http://127.0.0.1:8000/itemcode/items-code/'),
+          axios.get(`${BASE_URL}/employee/employee/`),
+          axios.get(`${BASE_URL}/itemcode/items-code/`),
         ]);
         setData(prev => ({
           ...prev,

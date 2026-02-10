@@ -15,12 +15,13 @@ export const useMarisMetadata = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8000';
         const [empRes, prodRes,stopRes,problemRes,caseRes] = await Promise.all([
-          axios.get('http://127.0.0.1:8000/employee/employee/'),
-          axios.get('http://127.0.0.1:8000/itemcode/items-code/'),
-          axios.get('http://127.0.0.1:8000/stoptime/stop-time/'),
-          axios.get('http://127.0.0.1:8000/problem/problems/'),
-          axios.get('http://127.0.0.1:8000/dlnc_case/dlnc_case/'),
+          axios.get(`${BASE_URL}/employee/employee/`),
+          axios.get(`${BASE_URL}/itemcode/items-code/`),
+          axios.get(`${BASE_URL}/stoptime/stop-time/`),
+          axios.get(`${BASE_URL}/problem/problems/`),
+          axios.get(`${BASE_URL}/dlnc_case/dlnc_case/`),
         ]);
 
         setData(prev => ({

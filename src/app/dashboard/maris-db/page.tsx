@@ -20,7 +20,8 @@ export default function MarisDashboard() {
   const handleFetch = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`http://127.0.0.1:8000/dashboard/maris/?start=${filters.start}&end=${filters.end}`);
+      const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8000';
+      const res = await fetch(`${BASE_URL}/dashboard/maris/?start=${filters.start}&end=${filters.end}`);
       if (!res.ok) throw new Error("Server Error");
       const json = await res.json();
       setData(json);
@@ -43,23 +44,23 @@ export default function MarisDashboard() {
         <div className="flex items-center gap-6">
           <div className="pl-2">
             <h1 className="text-xl font-black text-slate-900 tracking-tighter uppercase">Maris Analytics</h1>
-            <p className="text-[10px] text-slate-500 font-bold leading-none">FACTORY REAL-TIME MONITORING</p>
+            <p className="text-[16px] text-slate-500 font-bold leading-none">FACTORY REAL-TIME MONITORING</p>
           </div>
 
           <div className="h-10 w-[1px] bg-slate-200 hidden md:block" />
 
           <div className="flex items-center gap-3">
-            <div className="flex bg-slate-100 p-1 rounded-lg border border-slate-200">
+            <div className="flex bg-slate-100 p-1 rounded-lg border border-slate-400">
               <input
                 type="date"
-                className="bg-transparent border-none text-xs font-semibold text-slate-600 focus:ring-0 px-2"
+                className="bg-transparent border-none text-base font-semibold text-slate-600 focus:ring-0 px-2"
                 value={filters.start}
                 onChange={(e) => setFilters({...filters, start: e.target.value})}
               />
-              <span className="text-slate-400 self-center">→</span>
+              <span className="text-slate-600 self-center">→</span>
               <input
                 type="date"
-                className="bg-transparent border-none text-xs font-semibold text-slate-600 focus:ring-0 px-2"
+                className="bg-transparent border-none text-base font-semibold text-slate-600 focus:ring-0 px-2"
                 value={filters.end}
                 onChange={(e) => setFilters({...filters, end: e.target.value})}
               />
@@ -68,7 +69,7 @@ export default function MarisDashboard() {
             <button
               onClick={handleFetch}
               disabled={loading}
-              className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-black transition-all shadow-lg active:scale-95 ${
+              className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-base font-black transition-all shadow-lg active:scale-95 ${
                 loading ? 'bg-slate-400' : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-200'
               }`}
             >
@@ -91,7 +92,7 @@ export default function MarisDashboard() {
             <div className="col-span-12 lg:col-span-3 space-y-4">
               <div className="flex items-center justify-between px-1">
                 <span
-                    className="text-[10px] font-black text-slate-400 uppercase tracking-widest">General & Safety (7)</span>
+                    className="text-[16px] font-black text-slate-400 uppercase tracking-widest">General & Safety (7)</span>
                 <div className="h-1 w-12 bg-indigo-500 rounded-full"/>
               </div>
               <div className="flex flex-col gap-4">
@@ -111,11 +112,11 @@ export default function MarisDashboard() {
             {/* CỘT GIỮA: BIỂU ĐỒ (Dữ liệu trực quan) */}
             <div className="col-span-12 lg:col-span-6 space-y-4">
               <div className="flex items-center justify-between px-1">
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Pie Chart & Column Chart</span>
+                <span className="text-[16px] font-black text-slate-400 uppercase tracking-widest">Pie Chart & Column Chart</span>
               </div>
 
               <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 group">
-                <h3 className="text-[11px] font-black text-slate-500 uppercase mb-6 tracking-[0.2em] group-hover:text-indigo-600 transition-colors">
+                <h3 className="text-[16px] font-black text-slate-500 uppercase mb-6 tracking-[0.2em] group-hover:text-indigo-600 transition-colors">
                   Production Trend (Volume KG)
                 </h3>
                 <div className="h-[405px]">
@@ -124,7 +125,8 @@ export default function MarisDashboard() {
                     <BarChart data={data?.charts?.column_chart} margin={{top: 25, right: 10, left: 10, bottom: 0}}>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9"/>
                       <XAxis dataKey="name" tick={{fontSize: 10, fontWeight: 600}} axisLine={false} tickLine={false}/>
-                      <YAxis tick={{fontSize: 10}} axisLine={false} tickLine={false}/>
+                      <YAxis tick={{fontSize: 14}} axisLine={false} tickLine={false}
+                             tickFormatter={(value) => value.toLocaleString("en-US")}/>
                       <Tooltip cursor={{fill: '#f8fafc'}} contentStyle={{
                         borderRadius: '12px',
                         border: 'none',
@@ -150,7 +152,7 @@ export default function MarisDashboard() {
 
 
               <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 group">
-                <h3 className="text-[11px] font-black text-slate-500 uppercase mb-6 tracking-[0.2em] group-hover:text-emerald-600 transition-colors">Product
+                <h3 className="text-[16px] font-black text-slate-500 uppercase mb-6 tracking-[0.2em] group-hover:text-emerald-600 transition-colors">Product
                   Mix Ratio (%)</h3>
                 <div className="h-[400px]">
                   <ResponsiveContainer width="100%" height="100%">
@@ -182,7 +184,7 @@ export default function MarisDashboard() {
               <div className="flex items-center justify-between px-1">
                 <div className="h-1 w-12 bg-emerald-500 rounded-full"/>
                 <span
-                    className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Production Metrics (8)</span>
+                    className="text-[16px] font-black text-slate-400 uppercase tracking-widest">Production Metrics (8)</span>
               </div>
               {/* Chia lưới 2 cột cho 8 chỉ số để nhìn cân đối */}
               <div className="grid grid-cols-1 gap-3">

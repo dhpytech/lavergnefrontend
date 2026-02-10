@@ -8,7 +8,8 @@ import React, { useState, useEffect } from 'react';
 // ĐỊNH NGHĨA API BACKEND MỚI
 // Giả định endpoint mới là /mail/addresses/
 // (Bạn cần điều chỉnh URL này nếu API Django có path khác, ví dụ: 'http://127.0.0.1:8000/mail/addresses/')
-const API_URL = 'http://127.0.0.1:8000/mail/mail/';
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8000';
+const API_URL = `${BASE_URL}/mail/mail/`;
 
 // Định nghĩa các lựa chọn trạng thái mail từ Django Model
 type MailStatus = 'active' | 'inactive';

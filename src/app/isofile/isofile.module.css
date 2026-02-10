@@ -1,0 +1,110 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 1rem;
+}
+
+.headerDecoration {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.headerTitle {
+  font-size: 1.5rem;
+  font-weight: 850;
+  color: #0f172a;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.25rem;
+}
+
+.headerSubtitle {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+:global(.custom-scrollbar)::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+:global(.custom-scrollbar)::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+@media print {
+  :global(nav),
+  :global(aside),
+  :global(header),
+  :global(.no-print),
+  :global([class*="Sidebar"]),
+  :global([class*="Navbar"]) {
+    display: none !important;
+  }
+
+  :global(body),
+  :global(main),
+  :global(#__next),
+  .container {
+    height: auto !important;
+    overflow: visible !important;
+    display: block !important;
+    background: white !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  :global(.flex-1),
+  :global(.overflow-auto) {
+    height: auto !important;
+    overflow: visible !important;
+    display: block !important;
+    border: none !important;
+  }
+
+  .headerDecoration {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 0 0.5rem 0 !important;
+    margin-bottom: 1rem !important;
+    border-bottom: 2px solid #1e293b !important;
+    border-radius: 0 !important;
+  }
+
+  :global(table) {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    page-break-inside: auto;
+  }
+
+  :global(tr) {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  :global(th), :global(td) {
+    padding: 3px !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+
+    background-color: #f1f5f9 !important;
+    color: #000000 !important;
+    border: 1px solid #000000 !important;
+  }
+
+  :global(.sticky) {
+    position: static !important;
+  }
+
+  @page {
+    size: landscape;
+    margin: 10mm;
+  }
+}

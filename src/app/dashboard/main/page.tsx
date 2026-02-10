@@ -7,6 +7,12 @@ const infoItems = [
   { label: 'MARIS DASHBOARD', icon: <ClipboardList size={32} />, path: '/dashboard/maris-db' },
   { label: 'BAGGING DASHBOARD', icon: <ClipboardList size={32} />, path: '/dashboard/bagging-db' },
   { label: 'METAL DASHBOARD', icon: <ClipboardList size={32} />, path: '/dashboard/metal-db' },
+
+  { label: 'TRENDING DASHBOARD', icon: <ClipboardList size={32} />, path: '/dashboard/trend-db' },
+  { label: 'MARIS DETAIL DASHBOARD', icon: <ClipboardList size={32} />, path: '/dashboard/maris-detail-db' },
+
+  { label: 'BAGGING DETAIL DASHBOARD', icon: <ClipboardList size={32} />, path: '/dashboard/bagging-detail-db' },
+  { label: 'METAL DETAIL DASHBOARD', icon: <ClipboardList size={32} />, path: '/dashboard/metal-detail-db' },
 ];
 
 export default function InformationPage() {

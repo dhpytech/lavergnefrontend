@@ -6,7 +6,8 @@ import React, { useState, useEffect } from 'react';
 // =======================================================
 
 // ĐỊNH NGHĨA API BACKEND
-const API_URL = 'http://127.0.0.1:8000/itemcode/items-code/';
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8000';
+const API_URL =`${BASE_URL}/itemcode/items-code/`;
 
 // Định nghĩa các lựa chọn loại sản phẩm MỚI: Chỉ TP và SEMI-TP
 type ItemCategory = 'tp' | 'semi-tp';
