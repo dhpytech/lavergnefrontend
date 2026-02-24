@@ -13,8 +13,8 @@ interface FormattedDuration {
 interface DurationData {
   formatted_time: string;
 }
-
-const API_DURATION_URL = `${process.env.NEXT_PUBLIC_API_URL}/safety/duration/`;
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://gunicorn-lavergnebackendwsgi-production.up.railway.app';
+const API_DURATION_URL = `${BASE_URL}/safety/duration/`;
 
 // Hàm tiện ích: Phân tích chuỗi thời gian bằng JavaScript
 const parseFormattedTime = (formattedTime: string): FormattedDuration => {

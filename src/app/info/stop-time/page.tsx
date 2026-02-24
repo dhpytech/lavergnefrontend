@@ -447,7 +447,9 @@ export default function App() {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-sm p-6 transform transition-all duration-300">
         <div className="flex items-center space-x-3 mb-4">
-          <AlertTriangle className="text-red-500" />
+            <div className="text-red-500">
+                <AlertTriangle/>
+            </div>
           <h3 className="text-xl font-bold text-gray-900">Xác Nhận Xóa</h3>
         </div>
         <p className="text-gray-700 mb-6">
