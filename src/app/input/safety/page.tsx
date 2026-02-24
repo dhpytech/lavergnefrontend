@@ -34,8 +34,9 @@ export default function SafetyPage() {
     };
 
     try {
-      // **LƯU Ý:** Đã giữ URL như bạn cập nhật (không có dấu gạch chéo cuối /)
-      const res = await fetch(`http://127.0.0.1:8000/safety/safety-time/`, {
+      const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://gunicorn-lavergnebackendwsgi-production.up.railway.app';
+      const API_DURATION_URL = `${BASE_URL}/safety/safety-time/`;
+      const res = await fetch(API_DURATION_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
