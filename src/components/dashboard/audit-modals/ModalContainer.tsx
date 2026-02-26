@@ -16,7 +16,7 @@ export default function ModalContainer({ label, initialDates, initialShift, onCl
   const handleRefreshData = async (newFilters: any) => {
     setLoading(true);
     try {
-      const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8000';
+      const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://gunicorn-lavergnebackendwsgi-production.up.railway.app';
       const res = await fetch(`${BASE_URL}/dashboard/maris/?start=${newFilters.fromDate}&end=${newFilters.toDate}`);
       const json = await res.json();
       // Đảm bảo json.records tồn tại, nếu không dùng json.results tùy theo API của bạn
