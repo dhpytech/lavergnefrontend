@@ -15,6 +15,7 @@ export default function IsoFilePage() {
     setLoading(true);
     try {
       const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://gunicorn-lavergnebackendwsgi-production.up.railway.app';
+      // const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8000';
       const params = new URLSearchParams({ month: filters.month.toString(), year: filters.year.toString(), shift: filters.shift });
       const res = await fetch(`${BASE_URL}/entries/iso-file/?${params.toString()}`);
       const json = await res.json();

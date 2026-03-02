@@ -1,4 +1,4 @@
 export const SHIFT_OPTIONS = [
-  { value: 'DAY', label: 'Day Shift' },
-  { value: 'NIGHT', label: 'Night Shift' },
+  { value: 'Day', label: 'Day' },
+  { value: 'Night', label: 'Night' },
 ];

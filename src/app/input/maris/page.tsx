@@ -6,6 +6,7 @@ import { Plus, Send, Layers, Database } from 'lucide-react';
 import { multiMarisSchema, MultiMarisValues } from '@/src/schemas/marisSchema';
 import { useMarisMetadata } from '@/src/hooks/useMarisMetadata';
 import { MarisFormUnit } from '@/src/components/maris/MarisFormUnit';
+import axios from 'axios';
 
 export default function GlobalMarisPage() {
   const metadata = useMarisMetadata();
@@ -22,10 +23,33 @@ export default function GlobalMarisPage() {
 
   const { fields, append, remove } = useFieldArray({ control, name: "units" } as any);
 
-  const onFinalSubmit = async (data: MultiMarisValues) => {
-    // Logic gửi dữ liệu qua Axios đã bàn ở trên
-  };
+ const onFinalSubmit = async (data: MultiMarisValues) => {
+  const cleanBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://gunicorn-lavergnebackendwsgi-production.up.railway.app';
+  const API_URL = `${cleanBaseUrl}/entries/maris/`;
 
+  try {
+    // Duyệt qua từng unit trong danh sách để gửi riêng biệt
+    for (const unit of data.units) {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        // Gửi unit (Object/Dictionary), không gửi data.units (List)
+        body: JSON.stringify(unit),
+      });
+
+      if (!response.ok) {
+        const errorDetail = await response.json();
+        throw new Error(`Lỗi tại một bản ghi: ${JSON.stringify(errorDetail)}`);
+      }
+    }
+
+    alert(`Đã đẩy thành công tất cả ${data.units.length} bản ghi!`);
+    reset();
+  } catch (error: any) {
+    console.error("Sync Error:", error);
+    alert(`Không thể lưu dữ liệu: ${error.message}`);
+  }
+};
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col">
       {/* Header Full-width */}

@@ -14,9 +14,6 @@ interface Props {
   metadata: any;
 };
 
-
-
-
 export function MarisFormUnit({ index, control, register, onRemove, metadata }: Props) {
   const { fields, append, remove } = useFieldArray({ control, name: `units.${index}.production_data` as any });
   const watchProd = useWatch({ control, name: `units.${index}.production_data` as any });
@@ -42,22 +39,20 @@ export function MarisFormUnit({ index, control, register, onRemove, metadata }: 
             ))}
           </select>
         </div>
-        <div className="flex items-center gap-3">
-          <Clock size={20} className="text-slate-700" />
-          <select {...register(`units.${index}.shift` as any)} className="bg-white border border-slate-400 rounded px-3 py-1 text-sm font-bold outline-none">
-            <option value="DAY">CA NGÀY</option>
-            <option value="NIGHT">CA ĐÊM</option>
-          </select>
-
-
-        </div>
+        {/*<div className="flex items-center gap-3">*/}
+        {/*  <Clock size={20} className="text-slate-700" />*/}
+        {/*  <select {...register(`units.${index}.shift` as any)} className="bg-white border border-slate-400 rounded px-3 py-1 text-sm font-bold outline-none">*/}
+        {/*    <option value="DAY">CA NGÀY</option>*/}
+        {/*    <option value="NIGHT">CA ĐÊM</option>*/}
+        {/*  </select>*/}
+        {/*</div>*/}
       <MarisSelect
             register={register(`units.${index}.shift` as any)}
             watchValue={watchShift}
             placeholder={"Select Shift"}
               options={[
-                { value: 'DAY', label: 'CA NGÀY' },
-                { value: 'NIGHT', label: 'CA ĐÊM' }
+                { value: 'Day', label: 'CA NGÀY' },
+                { value: 'Night', label: 'CA ĐÊM' }
               ]}
               className="min-w-[120px] bg-slate-50" // Thêm nền xám nhẹ cho header
                 />
@@ -84,7 +79,7 @@ export function MarisFormUnit({ index, control, register, onRemove, metadata }: 
             </thead>
             <tbody className="divide-y divide-slate-100">
               {fields.map((field, idx) => {
-                const total = (Number(watchProd?.[idx]?.goodPro) || 0) + (Number(watchProd?.[idx]?.reject) || 0);
+                const total = (Number(watchProd?.[idx]?.goodPro) || 0) + (Number(watchProd?.[idx]?.dlnc) || 0);
                 return (
                     <tr key={field.id}>
                         <td className="py-2">
