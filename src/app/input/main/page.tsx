@@ -8,6 +8,7 @@ const infoItems = [
   { label: 'Bagging', icon: <Clock size={32} />, path: '/input/bagging' },
   { label: 'Metal', icon: <AlertTriangle size={32} />, path: '/input/metal' },
   { label: 'Safety', icon: <Box size={32} />, path: '/input/safety' },
+  { label: 'Maris-Data', icon: <Box size={32} />, path: '/input/maris-data' },
 ];
 
 export default function InformationPage() {

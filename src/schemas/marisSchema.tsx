@@ -8,7 +8,7 @@ const unitSchema = z.object({
     productCode: z.string().min(1),
     goodPro: z.coerce.number().default(0),
     dlnc: z.coerce.number().default(0),
-    case: z.string().default('Case A'),
+    case: z.string().default('Color'),
     reject: z.coerce.number().default(0),
     scrap: z.coerce.number().default(0),
     screenChanger: z.coerce.number().default(0),
@@ -31,4 +31,4 @@ export const multiMarisSchema = z.object({
 });
 
 export type MultiMarisValues = z.infer<typeof multiMarisSchema>;
-export type MarisUnitValues = z.infer<typeof unitSchema>;
+
