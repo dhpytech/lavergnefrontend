@@ -57,6 +57,21 @@ export default function MarisEnterpriseFullWide() {
     });
   };
 
+  const handleDelete = async (item: any) => {
+    const confirmDelete = window.confirm(
+      `Delete record #${item.id} (${new Date(item.date).toLocaleDateString('en-US')}) ?`
+    );
+    if (!confirmDelete) return;
+    try {
+      await axios.delete(`${API_URL}${item.id}/`);
+      alert("Delete Successful!")
+      setRecords(prev => prev.filter(r => r.id !== item.id));
+    } catch (err) {
+      console.error(err);
+      alert("Delete failed!");
+    }
+  };
+
   const onSubmit = async (formData: any) => {
     const payload = formData.units[0];
     try {
@@ -84,10 +99,7 @@ export default function MarisEnterpriseFullWide() {
   }, [records, startDate, endDate]);
 
   return (
-    /* 1. KHUNG CHÍNH: h-screen ép app không được cao hơn màn hình, overflow-hidden chặn scroll toàn trang */
     <div className="h-screen w-full bg-[#F8FAFC] antialiased flex flex-col overflow-hidden">
-
-      {/* HEADER - Cố định phía trên */}
       <header className="flex-none bg-[#0F172A] rounded-[5px] text-white px-2 py-2 flex justify-between items-center shadow-xl z-[60]">
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-3">
@@ -115,7 +127,6 @@ export default function MarisEnterpriseFullWide() {
         </div>
       </header>
 
-      {/* 2. VÙNG CHỨA BẢNG: flex-1 để tự động chiếm hết chiều cao còn lại */}
       <main className="flex-1 py-2 lg:py-4 overflow-hidden flex flex-col">
         <section className="flex-1 bg-white rounded-[5px] shadow-sm border border-slate-200 flex flex-col overflow-hidden">
 
@@ -126,7 +137,6 @@ export default function MarisEnterpriseFullWide() {
                   <th className="px-6 py-4 w-[110px] text-left">ID/Date</th>
                   <th className="px-6 py-4 w-[140px] text-left">Operator</th>
                   <th className="px-6 py-4 text-left">Maris Data Preview</th>
-                  {/* Cột Action dính bên phải trên Header */}
                   <th className="px-6 py-4 w-[140px] text-right sticky right-0 bg-[#0F172A] z-[56] shadow-[-4px_0_10px_rgba(0,0,0,0.3)]">
                     Actions
                   </th>
@@ -216,20 +226,15 @@ export default function MarisEnterpriseFullWide() {
                               </div>
                           )}
                         </div>
-
                       </div>
                     </td>
 
-                    {/* 4. CỘT ACTION DÍNH BÊN PHẢI:
-                        - sticky right-0: luôn dính lề phải.
-                        - backdrop-blur: tạo hiệu ứng nhìn xuyên thấu nội dung dưới bảng khi cuộn.
-                    */}
                     <td className="px-6 py-8 align-top text-right sticky right-0 bg-white/90 backdrop-blur-md z-10 group-hover:bg-slate-50/90 shadow-[-10px_0_15px_rgba(0,0,0,0.05)] transition-colors">
                       <div className="flex justify-end gap-2">
                         <button onClick={() => handleEdit(item)} className="p-3 bg-white border border-slate-200 rounded-xl text-blue-600 hover:bg-blue-600 hover:text-white transition-all shadow-sm active:scale-90">
                           <Edit2 size={18}/>
                         </button>
-                        <button className="p-3 bg-white border border-slate-200 rounded-xl text-red-400 hover:bg-red-500 hover:text-white transition-all shadow-sm active:scale-90">
+                        <button onClick={() => handleDelete(item)} className="p-3 bg-white border border-slate-200 rounded-xl text-red-400 hover:bg-red-500 hover:text-white transition-all shadow-sm active:scale-90">
                           <Trash2 size={18}/>
                         </button>
                       </div>
@@ -242,7 +247,7 @@ export default function MarisEnterpriseFullWide() {
         </section>
       </main>
 
-      {/* MODAL (Giữ nguyên) */}
+      {/* MODAL*/}
       {isFormOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setIsFormOpen(false)} />
@@ -265,24 +270,6 @@ export default function MarisEnterpriseFullWide() {
           </div>
         </div>
       )}
-
-      {/* CSS Inline để làm thanh cuộn đẹp hơn trên Windows */}
-      <style jsx global>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 8px;
-          height: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: #f1f5f9;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #cbd5e1;
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #94a3b8;
-        }
-      `}</style>
     </div>
   );
 }
