@@ -4,7 +4,7 @@ import { Calendar, RefreshCcw, FileSpreadsheet, Clock } from 'lucide-react';
 
 export default function IsoHeader({ filters, setFilters, onRefresh, loading, onExport }: any) {
   return (
-    <div className="bg-[#e2e8f0] p-6 rounded-[2rem] border border-slate-300 shadow-sm">
+    <div className="bg-[#e2e8f0] p-6 rounded-[5px] border border-slate-300 shadow-sm">
       <div className="flex items-center gap-3 mb-6">
         <span className="bg-[#2563eb] text-white px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-widest shadow-sm">
           ISO Report

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 const unitSchema = z.object({
-  date: z.string().min(1),
+  date: z.string().min(0),
   employee: z.string().min(1),
   shift: z.string().min(1),
   production_data: z.array(z.object({

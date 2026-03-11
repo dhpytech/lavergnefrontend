@@ -28,12 +28,10 @@ export default function GlobalMarisPage() {
   const API_URL = `${cleanBaseUrl}/entries/maris/`;
 
   try {
-    // Duyệt qua từng unit trong danh sách để gửi riêng biệt
     for (const unit of data.units) {
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        // Gửi unit (Object/Dictionary), không gửi data.units (List)
         body: JSON.stringify(unit),
       });
 
@@ -81,7 +79,6 @@ export default function GlobalMarisPage() {
         </div>
       </main>
 
-      {/* Tối ưu nút Submit & Add Unit chuyên nghiệp trong Sticky Footer */}
       <footer className="fixed bottom-0 left-0 w-full bg-white/80 backdrop-blur-md border-t border-slate-200 p-4 z-50 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
         <div className="w-full max-w-full px-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-6">
@@ -90,7 +87,6 @@ export default function GlobalMarisPage() {
               <p className="text-sm font-bold text-slate-700">{fields.length} Units Ready to Sync</p>
             </div>
 
-            {/* Nút THÊM UNIT linh hoạt nằm cạnh nút Submit */}
             <button
               type="button"
               onClick={() => append({
@@ -104,7 +100,6 @@ export default function GlobalMarisPage() {
             </button>
           </div>
 
-          {/* Nút SUBMIT TỔNG CHUYÊN NGHIỆP */}
           <button
             type="submit"
             onClick={handleSubmit(onFinalSubmit)}
@@ -118,3 +113,4 @@ export default function GlobalMarisPage() {
     </div>
   );
 }
+

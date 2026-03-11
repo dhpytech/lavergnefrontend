@@ -20,7 +20,7 @@ export function MarisFormUnit({ index, control, register, onRemove, metadata }: 
   const watchShift = useWatch({ control, name: `units.${index}.shift` as any });
 
   return (
-    <div className="bg-[#E2E8F0] p-6 rounded-lg border-2 border-slate-400 mb-4 relative shadow-md">
+    <div className="bg-[#E2E8F0] p-6 rounded-lg border-2 border-slate-400 mb-10 relative shadow-md">
       <button type="button" onClick={() => onRemove(index)} className="absolute -top-3 -right-3 bg-red-500 text-white p-1.5 rounded-full shadow-lg hover:bg-red-700">
         <Trash2 size={16} />
       </button>
