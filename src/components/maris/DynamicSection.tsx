@@ -6,7 +6,7 @@ import { Plus, Minus } from 'lucide-react';
 
 interface Props {
   title: string;
-  path: any; // Sử dụng any để tránh lỗi Type Assignable lồng nhau
+  path: any;
   type: "stop_time_data" | "problems";
   control: Control<MultiMarisValues>;
   register: UseFormRegister<MultiMarisValues>;
@@ -21,7 +21,7 @@ export const DynamicSection = ({ title, path, type, control, register, options }
     <div className="bg-white p-4 rounded-xl border border-slate-300 flex flex-col h-full shadow-sm">
       <div className="flex justify-between items-center mb-3 border-b border-slate-100 pb-2">
         <h3 className="text-[11px] font-bold text-slate-800 uppercase tracking-tighter">{title}</h3>
-        <button type="button" onClick={() => append({ [codeKey]: '', duration: 0 } as any)}
+        <button type="button" onClick={() => append({ [codeKey]: '', duration: '' } as any)}
           className="bg-slate-100 p-1 rounded border border-slate-300 hover:bg-slate-200">
           <Plus size={14} className="text-slate-600" />
         </button>

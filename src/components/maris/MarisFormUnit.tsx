@@ -39,13 +39,6 @@ export function MarisFormUnit({ index, control, register, onRemove, metadata }: 
             ))}
           </select>
         </div>
-        {/*<div className="flex items-center gap-3">*/}
-        {/*  <Clock size={20} className="text-slate-700" />*/}
-        {/*  <select {...register(`units.${index}.shift` as any)} className="bg-white border border-slate-400 rounded px-3 py-1 text-sm font-bold outline-none">*/}
-        {/*    <option value="DAY">CA NGÀY</option>*/}
-        {/*    <option value="NIGHT">CA ĐÊM</option>*/}
-        {/*  </select>*/}
-        {/*</div>*/}
       <MarisSelect
             register={register(`units.${index}.shift` as any)}
             watchValue={watchShift}
@@ -148,13 +141,13 @@ export function MarisFormUnit({ index, control, register, onRemove, metadata }: 
           </table>
             <button type="button" onClick={() => append({
                 productCode: '',
-                goodPro: 0,
-                dlnc: 0,
-                scrap: 0,
-                reject: 0,
-                screenChanger: 0,
-                visLab: 0,
-                outputSetting: 0
+                goodPro: null,
+                dlnc: null,
+                scrap: null,
+                reject: null,
+                screenChanger: null,
+                visLab: null,
+                outputSetting: null
             } as any)}
                     className="mt-3 px-4 py-1.5 bg-slate-800 text-white rounded text-[10px] uppercase font-bold hover:bg-black transition-colors">
             + Add Row

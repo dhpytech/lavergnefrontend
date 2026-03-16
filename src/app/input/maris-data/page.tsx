@@ -2,10 +2,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
-import {
-  RefreshCw, Edit2, Trash2, Save, X, Plus,
-  Filter, ChevronRight, Database
-} from 'lucide-react';
+import {RefreshCw, Edit2, Trash2, Save, X, Plus, Filter, ChevronRight, Database} from 'lucide-react';
 import { MarisFormUnit } from '@/src/components/maris/MarisFormUnit';
 import { useMarisMetadata } from '@/src/hooks/useMarisMetadata';
 

@@ -15,15 +15,16 @@ export default function GlobalMarisPage() {
       units: [{
         date: new Date().toISOString().split('T')[0],
         employee: '', shift: 'DAY',
-        production_data: [{ productCode: '', goodPro: 0, dlnc: 0, scrap: 0, reject: 0, screenChanger: 0, visLab: 0, outputSetting: 0 }],
-        stop_time_data: [], problems: []
+        production_data: [{ productCode: '', goodPro: null, dlnc: null, scrap: null, reject: null,
+                          screenChanger: null, visLab: null, outputSetting: null }],
+        stop_time_data: [] || [{duration:undefined}], problems: []
       }]
     }
   } as any);
 
   const { fields, append, remove } = useFieldArray({ control, name: "units" } as any);
 
- const onFinalSubmit = async (data: MultiMarisValues) => {
+  const onFinalSubmit = async (data: MultiMarisValues) => {
   const cleanBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://gunicorn-lavergnebackendwsgi-production.up.railway.app';
   const API_URL = `${cleanBaseUrl}/entries/maris/`;
 
@@ -37,6 +38,7 @@ export default function GlobalMarisPage() {
 
       if (!response.ok) {
         const errorDetail = await response.json();
+        console.log(errorDetail);
         throw new Error(`Lỗi tại một bản ghi: ${JSON.stringify(errorDetail)}`);
       }
     }

@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
+import { Plus, Save, X, Pencil, Trash2, Loader2, AlertCircle } from 'lucide-react';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://gunicorn-lavergnebackendwsgi-production.up.railway.app';
 const API_URL = `${BASE_URL}/employee/employee/`;
@@ -24,19 +25,9 @@ const mapApiToFrontend = (api: ApiEmployee): Employee => ({
 
 const mapFrontendToApi = (fe: Employee): ApiEmployee => ({
     employee_id: fe.employeeId,
-    employee_name: fe.name,
-    employee_position: fe.position,
+    name: fe.name,
+    position: fe.position,
 });
-
-// =======================================================
-// [ICONS] - Clean Minimalist Style
-// =======================================================
-const PlusIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="mr-2"><path d="M5 12h14M12 5v14" /></svg>;
-const SaveIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="mr-2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" /><polyline points="17 21 17 13 7 13 7 21" /></svg>;
-const XIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18M6 6l12 12" /></svg>;
-const EditIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" /></svg>;
-const TrashIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>;
-const LoaderIcon = () => <svg className="animate-spin h-5 w-5 text-white mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>;
 
 export default function EmployeeManager() {
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -151,18 +142,22 @@ export default function EmployeeManager() {
       {/* Main Form Card */}
       <div className="bg-white rounded-3xl shadow-sm border border-slate-200 p-8 mb-10 transition-all">
         <div className="flex items-center justify-between mb-8">
-            <h2 className={`text-lg font-bold flex items-center ${editingEmployee ? 'text-indigo-600' : 'text-slate-800'}`}>
-                {editingEmployee ? <SaveIcon /> : <PlusIcon />}
+            <h2 className={`text-lg font-bold flex items-center gap-2 ${editingEmployee ? 'text-indigo-600' : 'text-slate-800'}`}>
+                {editingEmployee ? <Save size={20} /> : <Plus size={20} />}
                 {editingEmployee ? `Editing: ${editingEmployee.name}` : "Register New Employee"}
             </h2>
             {editingEmployee && (
                 <button onClick={handleCancelEdit} className="text-slate-400 hover:text-slate-600 p-2 rounded-full hover:bg-slate-100 transition-all">
-                    <XIcon />
+                    <X size={20} />
                 </button>
             )}
         </div>
 
-        {error && <div className="bg-red-50 text-red-600 p-4 rounded-xl mb-6 text-sm font-medium border border-red-100 flex items-center">⚠️ {error}</div>}
+        {error && (
+          <div className="bg-red-50 text-red-600 p-4 rounded-xl mb-6 text-sm font-medium border border-red-100 flex items-center gap-2">
+            <AlertCircle size={18} /> {error}
+          </div>
+        )}
 
         <form onSubmit={editingEmployee ? handleUpdateItem : handleAddItem} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -181,8 +176,8 @@ export default function EmployeeManager() {
           </div>
 
           <div className="flex justify-end pt-2">
-            <button type="submit" disabled={isLoading} className={`min-w-[160px] py-3.5 px-6 rounded-2xl font-bold flex items-center justify-center transition-all shadow-xl shadow-indigo-100 ${editingEmployee ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-slate-900 hover:bg-slate-800'} text-white active:scale-95`}>
-              {isLoading ? <LoaderIcon /> : editingEmployee ? <SaveIcon /> : <PlusIcon />}
+            <button type="submit" disabled={isLoading} className={`min-w-[160px] py-3.5 px-6 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all shadow-xl shadow-indigo-100 ${editingEmployee ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-slate-900 hover:bg-slate-800'} text-white active:scale-95 disabled:opacity-70`}>
+              {isLoading ? <Loader2 className="animate-spin" size={20} /> : editingEmployee ? <Save size={20} /> : <Plus size={20} />}
               {isLoading ? "Processing..." : editingEmployee ? "Save Changes" : "Create Record"}
             </button>
           </div>
@@ -206,7 +201,7 @@ export default function EmployeeManager() {
                 </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
-                {employees.length === 0 ? (
+                {employees.length === 0 && !isLoading ? (
                     <tr><td colSpan={4} className="px-8 py-20 text-center text-slate-400 font-medium">No employee records found.</td></tr>
                 ) : (
                     employees.map((emp) => (
@@ -218,8 +213,12 @@ export default function EmployeeManager() {
                         </td>
                         <td className="px-8 py-5 text-right">
                             <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
-                                <button onClick={() => handleStartEdit(emp)} className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-100 rounded-lg transition-all" title="Edit Profile"><EditIcon /></button>
-                                <button onClick={() => setEmployeeToDelete(emp)} className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all" title="Delete Profile"><TrashIcon /></button>
+                                <button onClick={() => handleStartEdit(emp)} className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-100 rounded-lg transition-all" title="Edit Profile">
+                                    <Pencil size={16} />
+                                </button>
+                                <button onClick={() => setEmployeeToDelete(emp)} className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all" title="Delete Profile">
+                                    <Trash2 size={16} />
+                                </button>
                             </div>
                         </td>
                     </tr>
