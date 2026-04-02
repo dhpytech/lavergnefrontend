@@ -2,7 +2,7 @@
 
 interface RowProps {
   title: string;
-  dataMap: Record<string, (number | string)[]>;
+  dataMap: Record<string, (number | string | string[])[]>;
   days: number;
   type: 'number' | 'text';
   showTotal?: boolean;
@@ -39,12 +39,11 @@ export default function IsoMatrixRow({ title, dataMap, days, type, showTotal = t
         <>
           {keys.map((key) => {
             const values = dataMap[key];
-
             const currentSum = type === 'number' ? (values as number[]).reduce((a, b) => a + (Number(b) || 0), 0) : null;
             const finalTotal = (manualTotals && manualTotals[key] !== undefined) ? manualTotals[key] : currentSum;
 
             return (
-              <tr key={key} className=" hover:bg-blue-50/50 transition-colors border-b border-slate-200 group">
+              <tr key={key} className="hover:bg-blue-50/50 transition-colors border-b border-slate-200 group">
                 <td className="p-2 sticky left-0 bg-white group-hover:bg-blue-50 z-10 border-r border-slate-300 font-bold text-slate-700 text-[10px] min-w-[200px]">
                   {key.toUpperCase()}
                 </td>
@@ -52,8 +51,15 @@ export default function IsoMatrixRow({ title, dataMap, days, type, showTotal = t
                 {Array.from({ length: days }, (_, i) => {
                   const val = values[i];
                   return (
-                    <td key={i} className="border-r border-slate-200 text-center min-w-[45px] w-[45px] h-8 text-[10px] text-slate-700">
-                      {type === 'number' ? (val && Number(val) > 0 ? Number(val).toLocaleString() : "") : val}
+                    <td
+                      key={i}
+                      className={`border-r border-slate-200 text-center min-w-[45px] w-[45px] p-1 text-[10px] text-slate-700 ${type === 'text' ? 'whitespace-pre-line leading-tight' : ''}`}
+                    >
+                      {type === 'number' ? (
+                        val && Number(val) > 0 ? Number(val).toLocaleString() : ""
+                      ) : (
+                        Array.isArray(val) ? val.join('\n') : val
+                      )}
                     </td>
                   );
                 })}

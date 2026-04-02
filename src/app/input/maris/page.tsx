@@ -17,7 +17,7 @@ export default function GlobalMarisPage() {
         employee: '', shift: 'DAY',
         production_data: [{ productCode: '', goodPro: null, dlnc: null, scrap: null, reject: null,
                           screenChanger: null, visLab: null, outputSetting: null }],
-        stop_time_data: [] || [{duration:undefined}], problems: []
+        stop_time_data: [] , problems: []
       }]
     }
   } as any);
@@ -47,6 +47,7 @@ export default function GlobalMarisPage() {
     reset();
   } catch (error: any) {
     console.error("Sync Error:", error);
+    console.log(data.units)
     alert(`Không thể lưu dữ liệu: ${error.message}`);
   }
 };

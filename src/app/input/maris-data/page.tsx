@@ -6,7 +6,7 @@ import {RefreshCw, Edit2, Trash2, Save, X, Plus, Filter, ChevronRight, Database}
 import { MarisFormUnit } from '@/src/components/maris/MarisFormUnit';
 import { useMarisMetadata } from '@/src/hooks/useMarisMetadata';
 
-const cleanBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://gunicorn-lavergnebackendwsgi-production.up.railway.app';
+const cleanBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 const API_URL = `${cleanBaseUrl}/entries/maris/`;
 
 export default function MarisEnterpriseFullWide() {
@@ -177,7 +177,7 @@ export default function MarisEnterpriseFullWide() {
                                       className="text-indigo-600">{Number(p.goodPro) + Number(p.dlnc)}</b></span>
                                   <span>Reject: <b>{p.reject}</b></span>
                                   <span>Scrap: <b className="text-red-500">{p.scrap}</b></span>
-                                  <span>Screen: <b>{p.screen}</b></span>
+                                  <span>Screen: <b>{p.screen || p.screenChanger}</b></span>
                                   <span className="text-blue-500">Vis-Lab: <b>{p.visslab}</b></span>
                                   <span>Output-Setting: <b>{p.outputSetting}</b></span>
                                 </div>
@@ -190,12 +190,12 @@ export default function MarisEnterpriseFullWide() {
                             <p className="text-[9px] font-black text-red-600 uppercase mb-2 italic">Stop Time Log</p>
                             {item.stop_time_data?.length > 0 ? item.stop_time_data.map((s: any, idx: number) => {
                               const timeBasedCodes = ['# ORDER CHANGE', '# OF MECHANICAL FAILURE'];
-                              const unitLabel = timeBasedCodes.includes(s.stopCode?.toUpperCase()) ? ' times' : 'h';
+                              const unitLabel = timeBasedCodes.includes(s.stopCode?.toUpperCase() || s.stopTime?.toUpperCase()) ? ' times' : 'h';
                               return (
                                   <div key={idx}
                                        className="flex justify-between text-[11px] font-bold py-1 border-b border-red-100 last:border-0">
-                                    <span className="text-red-900 uppercase">{s.stopCode}</span>
-                                    <span className="font-black">{s.duration}{unitLabel}</span>
+                                    <span className="text-red-900 uppercase">{s.stopCode||s.stopTime}</span>
+                                    <span className="font-black">{s.duration||s.hour}{unitLabel}</span>
                                   </div>
                               );
                             }) : <span className="text-slate-300 italic text-[11px]">No downtime</span>}

@@ -195,18 +195,16 @@ export default function IsoFilePage() {
             <table className="w-full border-collapse min-w-max">
               <thead className="sticky top-0 z-[100]">
                 <tr className="bg-[#1e293b] text-white">
-                  {/* TYPE/DATE: Sticky cả cột và hàng */}
+
                   <th className="p-3 sticky left-0 top-0 bg-[#1e293b] border-r border-slate-600 z-[110] text-left min-w-[200px] text-[10px] font-black uppercase">
                     TYPE / DATE
                   </th>
-
                   {Array.from({ length: days }, (_, i) => (
                     <th key={i} className="border-r border-slate-600 text-center w-[45px] min-w-[45px] text-[10px] font-bold">
                       {i + 1}
                     </th>
                   ))}
 
-                  {/* TOTAL: Sticky cả cột và hàng */}
                   <th className="p-3 sticky right-0 top-0 bg-blue-700 border-l border-blue-800 z-[110] text-right min-w-[70px] w-[70px] text-[10px] font-black">
                     TOTAL
                   </th>
@@ -235,7 +233,6 @@ export default function IsoFilePage() {
         </div>
       </main>
 
-      {/* Style bổ trợ cho Scrollbar */}
       <style jsx global>{`
         .custom-scrollbar::-webkit-scrollbar { width: 8px; height: 10px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }

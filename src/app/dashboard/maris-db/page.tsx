@@ -10,9 +10,26 @@ import SafetyDurationDisplay from '@/src/components/dashboard/SafetyDurationDisp
 
 const COLORS = ['#2563eb', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
 
+const getFormattedDate = (date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 export default function MarisDashboard() {
+  const now = new Date();
+
   const [showDashboard, setShowDashboard] = useState(false);
-  const [filters, setFilters] = useState({ shift: 'Total', start: '2025-06-01', end: '2025-06-30' });
+  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+  const [filters, setFilters] = useState(
+      {
+    shift: 'Total',
+    start: getFormattedDate(firstDay),
+    end: getFormattedDate(lastDay),
+  });
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [modal, setModal] = useState({ open: false, label: "" });
@@ -20,12 +37,12 @@ export default function MarisDashboard() {
   const handleFetch = async () => {
     setLoading(true);
     try {
-      const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://gunicorn-lavergnebackendwsgi-production.up.railway.app';
+      const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
       const res = await fetch(`${BASE_URL}/dashboard/maris/?start=${filters.start}&end=${filters.end}`);
       if (!res.ok) throw new Error("Server Error");
       const json = await res.json();
       setData(json);
-      setShowDashboard(true); // Hiển thị sau khi load data thành công
+      setShowDashboard(true);
     } catch (error) {
       console.error("Fetch Error:", error);
       alert("Không thể kết nối với Server Django!");
@@ -136,7 +153,6 @@ export default function MarisDashboard() {
                       />
 
                       <Bar dataKey="volume" fill="#4f46e5" radius={[6, 6, 0, 0]} barSize={40}>
-                        {/* SỬA TẠI ĐÂY: Thêm nhãn trên đầu cột */}
                         <LabelList
                             dataKey="volume"
                             position="top"
@@ -179,7 +195,6 @@ export default function MarisDashboard() {
               </div>
             </div>
 
-            {/* CỘT PHẢI: 8 CHỈ SỐ (Chi tiết Sản xuất) */}
             <div className="col-span-12 lg:col-span-3 space-y-4">
               <div className="flex items-center justify-between px-1">
                 <div className="h-1 w-12 bg-emerald-500 rounded-full"/>
