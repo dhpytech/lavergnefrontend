@@ -178,7 +178,7 @@ export default function MarisEnterpriseFullWide() {
                                   <span>Reject: <b>{p.reject}</b></span>
                                   <span>Scrap: <b className="text-red-500">{p.scrap}</b></span>
                                   <span>Screen: <b>{p.screen || p.screenChanger}</b></span>
-                                  <span className="text-blue-500">Vis-Lab: <b>{p.visslab}</b></span>
+                                  <span className="text-blue-500">Vis-Lab: <b>{p.visslab||p.visLab}</b></span>
                                   <span>Output-Setting: <b>{p.outputSetting}</b></span>
                                 </div>
                               </div>
