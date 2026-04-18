@@ -4,11 +4,13 @@ import { useRouter } from 'next/navigation';
 import { ClipboardList, Clock, AlertTriangle, Box, Mail, Users } from 'lucide-react';
 
 const infoItems = [
-  { label: 'Maris', icon: <ClipboardList size={32} />, path: '/input/maris' },
-  { label: 'Bagging', icon: <Clock size={32} />, path: '/input/bagging' },
-  { label: 'Metal', icon: <AlertTriangle size={32} />, path: '/input/metal' },
+  { label: 'Maris Multi-Input', icon: <ClipboardList size={32} />, path: '/input/maris' },
+  { label: 'Bagging Multi-Input', icon: <Clock size={32} />, path: '/input/bagging' },
+  { label: 'Metal Multi-Input', icon: <AlertTriangle size={32} />, path: '/input/metal' },
   { label: 'Safety', icon: <Box size={32} />, path: '/input/safety' },
-  { label: 'Maris-Data', icon: <Box size={32} />, path: '/input/maris-data' },
+  { label: 'Maris Data Management', icon: <Box size={32} />, path: '/input/maris-data' },
+  { label: 'Bagging Data Management', icon: <Box size={32} />, path: '/input/bagging-data' },
+  { label: 'Metal Data Management', icon: <Box size={32} />, path: '/input/metal-data' },
 ];
 
 export default function InformationPage() {
