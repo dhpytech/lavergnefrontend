@@ -7,9 +7,16 @@ interface StatCardProps {
 }
 
 export const StatCard = ({ label, value, lastMonth, lastYear, onClick }: StatCardProps) => {
-  const getStatusColor = (val: string) => {
-    if (val.startsWith('+')) return 'text-green-600';
-    if (val.startsWith('-')) return 'text-red-600';
+  // const getStatusColor = (val: string) => {
+  //   if (val.startsWith('+')) return 'text-green-600';
+  //   if (val.startsWith('-')) return 'text-red-600';
+  //   return 'text-slate-400';
+  // };
+
+  const getStatusColor = (val: any) => {
+    const safeVal = String(val ?? "");
+    if (safeVal.startsWith('+')) return 'text-green-600 font-bold';
+    if (safeVal.startsWith('-')) return 'text-red-600 font-bold';
     return 'text-slate-400';
   };
 
