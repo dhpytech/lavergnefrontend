@@ -26,9 +26,9 @@ export default function MarisDashboard() {
 
   const [filters, setFilters] = useState(
       {
-    shift: 'Total',
+    shift: 'All',
     start: getFormattedDate(firstDay),
-    end: getFormattedDate(lastDay),
+    end: getFormattedDate(now ?? now<lastDay),
   });
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
@@ -38,7 +38,7 @@ export default function MarisDashboard() {
     setLoading(true);
     try {
       const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-      const res = await fetch(`${BASE_URL}/dashboard/maris/?start=${filters.start}&end=${filters.end}`);
+      const res = await fetch(`${BASE_URL}/dashboard/maris/?start=${filters.start}&end=${filters.end}&shift=${filters.shift}`);
       if (!res.ok) throw new Error("Server Error");
       const json = await res.json();
       setData(json);
@@ -52,6 +52,7 @@ export default function MarisDashboard() {
   };
 
   const statEntries = data?.kpis ? Object.entries(data.kpis) : [];
+  useEffect(() => { handleFetch(); }, []);
 
   return (
     <div className="p-6 bg-[#f1f5f9] min-h-screen space-y-6 font-sans">
@@ -68,32 +69,46 @@ export default function MarisDashboard() {
 
           <div className="flex items-center gap-3">
             <div className="flex bg-slate-100 p-1 rounded-lg border border-slate-400">
+              {/*<label className="text-xs font-bold text-slate-500">Shift:</label>*/}
+              <select
+                  className="border rounded-md px-2 py-1 text-xs font-bold outline-none"
+                  value={filters.shift}
+                  onChange={e => setFilters({...filters, shift: e.target.value})}
+              >
+                <option value="All">All</option>
+                <option value="day">Day</option>
+                <option value="night">Night</option>
+              </select>
+
               <input
-                type="date"
-                className="bg-transparent border-none text-base font-semibold text-slate-600 focus:ring-0 px-2"
-                value={filters.start}
-                onChange={(e) => setFilters({...filters, start: e.target.value})}
+                  type="date"
+                  className="bg-transparent border-none text-base font-semibold text-slate-600 focus:ring-0 px-2"
+                  value={filters.start}
+                  onChange={(e) => setFilters({...filters, start: e.target.value})}
               />
               <span className="text-slate-600 self-center">→</span>
               <input
-                type="date"
-                className="bg-transparent border-none text-base font-semibold text-slate-600 focus:ring-0 px-2"
-                value={filters.end}
-                onChange={(e) => setFilters({...filters, end: e.target.value})}
+                  type="date"
+                  className="bg-transparent border-none text-base font-semibold text-slate-600 focus:ring-0 px-2"
+                  value={filters.end}
+                  onChange={(e) => setFilters({...filters, end: e.target.value})}
               />
             </div>
 
             <button
-              onClick={handleFetch}
-              disabled={loading}
-              className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-base font-black transition-all shadow-lg active:scale-95 ${
-                loading ? 'bg-slate-400' : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-200'
-              }`}
+                onClick={handleFetch}
+                disabled={loading}
+                className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-base font-black transition-all shadow-lg active:scale-95 ${
+                    loading ? 'bg-slate-400' : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-200'
+                }`}
             >
               {loading ? (
-                <span className="animate-spin text-lg">⏳</span>
+                  <>
+                    <span className="animate-spin text-lg">🔄</span>
+                    <span className="text-[10px] font-bold tracking-widest uppercase animate-pulse">Loading Data ...</span>
+                  </>
               ) : (
-                'VIEW DASHBOARD'
+                  'VIEW DASHBOARD'
               )}
             </button>
           </div>
