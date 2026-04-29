@@ -27,7 +27,7 @@ const dashboardGroups = [
     title: "Strategic Analytics",
     description: "Performance trends, statistical forecasting, and efficiency modeling.",
     items: [
-      { label: 'PERFORMANCE TRENDS', icon: <TrendingUp size={24} />, path: '/dashboard/trend-db', color: 'text-indigo-600', bg: 'bg-indigo-50', border: 'hover:border-indigo-400' },
+      { label: 'PERFORMANCE TRENDS', icon: <TrendingUp size={24} />, path: '/dashboard/maris-trendline', color: 'text-indigo-600', bg: 'bg-indigo-50', border: 'hover:border-indigo-400' },
     ]
   },
   {
