@@ -23,7 +23,6 @@ const chartConfigurations = [
     menuTitle: 'Hiệu Suất Chung',
     datasets: [
       { label: 'Sản Lượng', dataPath: 'SUMMARY.total_prod', borderColor: '#3b82f6', backgroundColor: 'transparent' },
-      { label: 'Phế Phẩm', dataPath: 'SUMMARY.total_scrap', borderColor: '#ef4444', backgroundColor: 'transparent', borderDash: [5, 5] }
     ]
   }
 ];
@@ -71,14 +70,13 @@ export default function MarisTrendlineDashboard() {
 
         {/* MAIN CHART CONTAINER */}
         <main className="flex-1 p-6 pr-3 h-full overflow-y-auto">
-          <div
-              className="w-full h-full bg-white rounded-2xl shadow-sm border border-slate-200 p-8 flex flex-col relative transition-all">
+          <div className="w-full h-full bg-white rounded-2xl shadow-sm border border-slate-200 p-8 flex flex-col relative transition-all">
 
-            {/* THANH CHỈ THỊ ACTIVE - GÓC TRÊN CÙNG BÊN PHẢI BIỂU ĐỒ CHÍNH */}
-            <div className="absolute top-6 right-8 flex flex-col items-end pointer-events-none">
-              <div className="h-1.5 w-12 bg-blue-600 rounded-full mb-1 shadow-[0_0_10px_rgba(37,99,235,0.3)]"></div>
-              <span className="text-[9px] font-black text-blue-600/40 uppercase tracking-widest">Active View</span>
-            </div>
+            {/*/!* THANH CHỈ THỊ ACTIVE - GÓC TRÊN CÙNG BÊN PHẢI BIỂU ĐỒ CHÍNH *!/*/}
+            {/*<div className="absolute top-6 right-8 flex flex-col items-end pointer-events-none">*/}
+            {/*  <div className="h-1.5 w-12 bg-blue-600 rounded-full mb-1 shadow-[0_0_10px_rgba(37,99,235,0.3)]"></div>*/}
+            {/*  <span className="text-[9px] font-black text-blue-600/40 uppercase tracking-widest">Active View</span>*/}
+            {/*</div>*/}
 
             <div className="mb-6 shrink-0 flex items-center justify-between">
               <div>
