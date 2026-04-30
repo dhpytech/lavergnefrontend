@@ -4,13 +4,13 @@ import { Chart as ChartJS, registerables } from 'chart.js';
 
 ChartJS.register(...registerables);
 
-interface TrendChartProps {
+interface MiniChartProps {
   data: any;
   title: string;
   datasetsConfig: any[];
 }
 
-export const FactoryTrendChart = ({ data, title, datasetsConfig }: TrendChartProps) => {
+export const MiniTrendChart = ({ data, title, datasetsConfig }: MiniChartProps) => {
   const months = Object.keys(data);
 
   const chartData = {
@@ -18,19 +18,20 @@ export const FactoryTrendChart = ({ data, title, datasetsConfig }: TrendChartPro
     datasets: datasetsConfig.map(config => ({
       ...config,
       data: months.map(m => {
-        // Hỗ trợ truy cập dữ liệu lồng nhau như "SUMMARY.total_prod"
         const keys = config.dataPath.split('.');
         let value = data[m];
         for (const key of keys) {
           if (value && value[key] !== undefined) {
             value = value[key];
           } else {
-            value = 0; // Trả về 0 nếu không tìm thấy dữ liệu
+            value = 0;
             break;
           }
         }
         return value;
       }),
+      borderWidth: 1.5, // Làm đường nét mỏng hơn
+      pointRadius: 1, // Làm điểm nhỏ hơn
     })),
   };
 
@@ -38,26 +39,23 @@ export const FactoryTrendChart = ({ data, title, datasetsConfig }: TrendChartPro
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      title: {
-        display: true,
-        text: title,
-        font: { size: 16, weight: 'bold' },
-        padding: { bottom: 20 },
-      },
-      legend: {
-        position: 'top' as const,
-      },
+      legend: { display: false }, // Tắt chú thích
+      title: { display: false }, // Tắt tiêu đề trong biểu đồ mini
+      tooltip: { enabled: false }, // Tắt tooltip
     },
     scales: {
-      y: {
-        beginAtZero: true,
-        title: { display: true, text: 'kg' },
-      },
+      x: { display: false }, // Tắt trục X
+      y: { display: false }, // Tắt trục Y
     },
+    elements: {
+        line: {
+            tension: 0.3 // Làm đường cong nhẹ
+        }
+    }
   };
 
   return (
-    <div className="h-[400px] w-full">
+    <div className="h-full w-full">
       <Line data={chartData} options={options} />
     </div>
   );
