@@ -7,24 +7,52 @@ import { MiniTrendChart } from '@/src/components/dashboard/MiniTrendChart';
 const chartConfigurations = [
   {
     id: 'TOTAL_PROD',
-    title: 'Xu Hướng Tổng Sản Lượng',
-    menuTitle: 'Sản Lượng Tổng',
-    datasets: [{ label: 'Sản Lượng (kg)', dataPath: 'SUMMARY.total_prod', borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.05)', fill: true }]
+    title: 'PRODUCTION TREND LINE CHART',
+    menuTitle: 'PRODUCTION',
+    datasets: [{ label: 'PRODUCTION (kg)', dataPath: 'SUMMARY.total_prod', borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.05)', fill: true }]
   },
   {
     id: 'TOTAL_SCRAP',
-    title: 'Xu Hướng Tổng Phế Phẩm',
-    menuTitle: 'Phế Phẩm Tổng',
-    datasets: [{ label: 'Phế Phẩm (kg)', dataPath: 'SUMMARY.total_scrap', borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.05)', fill: true }]
+    title: 'SCRAP TREND LINE CHART',
+    menuTitle: 'SCRAP',
+    datasets: [{ label: 'SCRAP (kg)', dataPath: 'SUMMARY.total_scrap', borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.05)', fill: true }]
   },
   {
-    id: 'PROD_SCRAP_TREND',
-    title: 'So Sánh Sản Lượng & Phế Phẩm',
-    menuTitle: 'Hiệu Suất Chung',
+    id: 'TOTAL_DLNC',
+    title: 'DLNC TITLE',
+    menuTitle: 'DLNC',
+    datasets: [{ label: 'DLNC (kg)', dataPath: 'SUMMARY.total_dlnc', borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.05)', fill: true }]
+  },
+     {
+    id: 'TOTAL_REJECT',
+    title: 'REJECT TITLE',
+    menuTitle: 'REJECT',
+    datasets: [{ label: 'REJECT (kg)', dataPath: 'SUMMARY.total_reject', borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.05)', fill: true }]
+  },
+  {
+    id: 'TOTAL_SCREEN',
+    title: 'SCREEN TITLE',
+    menuTitle: 'SCREEN',
     datasets: [
-      { label: 'Sản Lượng', dataPath: 'SUMMARY.total_prod', borderColor: '#3b82f6', backgroundColor: 'transparent' },
+      { label: 'SCREEN (kg)', dataPath: 'SUMMARY.total_screen', borderColor: '#3b82f6', backgroundColor: 'transparent' },
     ]
-  }
+  },
+  {
+    id: 'TOTAL_VISSLAB',
+    title: 'VISSLAB TITLE',
+    menuTitle: 'VISSLAB',
+    datasets: [
+      { label: 'VISSLAB (kg)', dataPath: 'SUMMARY.total_visslab', borderColor: '#3b82f6', backgroundColor: 'transparent' },
+    ]
+  },
+  {
+    id: 'TOTAL_NUM_SHIFTS',
+    title: 'NUM_SHIFTS TITLE',
+    menuTitle: 'NUM_SHIFTS',
+    datasets: [
+      { label: 'NUM_SHIFTS (shifts)', dataPath: 'SUMMARY.total_shifts', borderColor: '#3b82f6', backgroundColor: 'transparent' },
+    ]
+  },
 ];
 
 export default function MarisTrendlineDashboard() {
@@ -72,11 +100,11 @@ export default function MarisTrendlineDashboard() {
         <main className="flex-1 p-6 pr-3 h-full overflow-y-auto">
           <div className="w-full h-full bg-white rounded-2xl shadow-sm border border-slate-200 p-8 flex flex-col relative transition-all">
 
-            {/*/!* THANH CHỈ THỊ ACTIVE - GÓC TRÊN CÙNG BÊN PHẢI BIỂU ĐỒ CHÍNH *!/*/}
-            {/*<div className="absolute top-6 right-8 flex flex-col items-end pointer-events-none">*/}
-            {/*  <div className="h-1.5 w-12 bg-blue-600 rounded-full mb-1 shadow-[0_0_10px_rgba(37,99,235,0.3)]"></div>*/}
-            {/*  <span className="text-[9px] font-black text-blue-600/40 uppercase tracking-widest">Active View</span>*/}
-            {/*</div>*/}
+            {/* THANH CHỈ THỊ ACTIVE - GÓC TRÊN CÙNG BÊN PHẢI BIỂU ĐỒ CHÍNH */}
+            <div className="absolute top-6 right-8 flex flex-col items-end pointer-events-none">
+              <div className="h-1.5 w-12 bg-blue-600 rounded-full mb-1 shadow-[0_0_10px_rgba(37,99,235,0.3)]"></div>
+              <span className="text-[9px] font-black text-blue-600/40 uppercase tracking-widest">Active View</span>
+            </div>
 
             <div className="mb-6 shrink-0 flex items-center justify-between">
               <div>

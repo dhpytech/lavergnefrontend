@@ -18,14 +18,13 @@ export const FactoryTrendChart = ({ data, title, datasetsConfig }: TrendChartPro
     datasets: datasetsConfig.map(config => ({
       ...config,
       data: months.map(m => {
-        // Hỗ trợ truy cập dữ liệu lồng nhau như "SUMMARY.total_prod"
         const keys = config.dataPath.split('.');
         let value = data[m];
         for (const key of keys) {
           if (value && value[key] !== undefined) {
             value = value[key];
           } else {
-            value = 0; // Trả về 0 nếu không tìm thấy dữ liệu
+            value = 0;
             break;
           }
         }
@@ -45,20 +44,25 @@ export const FactoryTrendChart = ({ data, title, datasetsConfig }: TrendChartPro
         padding: { bottom: 20 },
       },
       legend: {
+        display:false,
         position: 'top' as const,
       },
     },
     scales: {
+      x: {
+        beginAtZero: true,
+        title: { display: true, text: 'MONTH', align: 'center' as const, padding: 30, font: {weight: 'bold', size: 15} },
+      },
       y: {
         beginAtZero: true,
-        title: { display: true, text: 'kg' },
+        title: { display: false, text: 'KG', align: 'center' as const, padding: 30, font: {weight: 'bold'} },
       },
     },
   };
 
   return (
     <div className="h-[400px] w-full">
-      <Line data={chartData} options={options} />
+      <Line data={chartData} options={options}/>
     </div>
   );
 };
