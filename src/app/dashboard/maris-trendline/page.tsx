@@ -56,10 +56,10 @@ export default function MarisTrendlineDashboard() {
   const [chartType, setChartType] = useState<'line' | 'bar'>('line'); // State chuyển đổi
   const [startDate, setStartDate] = useState('2023-01-01');
   const [endDate, setEndDate] = useState('2023-12-31');
-
+  const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
   const fetchData = async () => {
     try {
-      const res = await fetch(`http://127.0.0.1:8000/dashboard/monthly-maris?start=${startDate}&end=${endDate}`);
+      const res = await fetch(`${BASE_URL}/dashboard/monthly-maris?start=${startDate}&end=${endDate}`);
       const json = await res.json();
       setApiData(json);
     } catch (error) { console.error("API Error:", error); }

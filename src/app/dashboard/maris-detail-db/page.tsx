@@ -20,11 +20,12 @@ export default function EmployeeDashboard() {
   const [chartType, setChartType] = useState<'line' | 'bar'>('line');
   const [dates, setDates] = useState({ start: '2025-01-01', end: '2026-04-30' });
 
+  const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
   const fetchAll = async () => {
     try {
       const [dRes, eRes] = await Promise.all([
-        fetch(`http://127.0.0.1:8000/dashboard/monthly-maris?start=${dates.start}&end=${dates.end}`),
-        fetch(`http://127.0.0.1:8000/dashboard/active-employees?start=${dates.start}&end=${dates.end}`)
+        fetch(`${BASE_URL}/dashboard/monthly-maris?start=${dates.start}&end=${dates.end}`),
+        fetch(`${BASE_URL}/dashboard/active-employees?start=${dates.start}&end=${dates.end}`)
       ]);
       const dJson = await dRes.json();
       const eJson = await eRes.json();
