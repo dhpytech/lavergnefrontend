@@ -4,8 +4,9 @@ import {
   Chart as ChartJS,
   registerables
 } from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-ChartJS.register(...registerables);
+ChartJS.register(...registerables, ChartDataLabels);
 
 interface TrendChartProps {
   data: any;
@@ -36,19 +37,14 @@ export const FactoryTrendChart = ({ data, datasetsConfig, type = 'line' }: Trend
           }
           return value;
         }),
-        // TỰ ĐỘNG ĐIỀU CHỈNH MÀU ĐỂ TRÁNH BỊ MỜ
-        // Nếu là Bar: Dùng màu đậm (0.8 opacity) để cột rõ ràng
-        // Nếu là Line: Giữ nguyên màu cấu hình (thường là 0.05 để fill nhẹ bên dưới)
         backgroundColor: isBar
           ? config.borderColor.replace('rgb', 'rgba').replace(')', ', 0.8)')
           : config.backgroundColor,
 
-        // Cấu hình riêng cho Bar để nhìn hiện đại hơn
         borderRadius: isBar ? 6 : 0,
         borderWidth: isBar ? 1 : 2,
         barPercentage: 0.6,
         categoryPercentage: 0.8,
-        // tension: 0.4, // Độ mượt của đường Line
       };
     }),
   };
@@ -56,8 +52,29 @@ export const FactoryTrendChart = ({ data, datasetsConfig, type = 'line' }: Trend
   const options: any = {
     responsive: true,
     maintainAspectRatio: false,
+    layout: {
+      padding: {
+        right: 40,
+        top: 20
+      },
+    },
     plugins: {
       legend: { display: false },
+      datalabels: {
+        display: true,
+        align: 'top',
+        anchor: 'end',
+        offset: 4,
+        color: '#64748b',
+        font: {
+          size: 15,
+          weight: 'bold',
+        },
+        formatter: (value: number) => {
+          return value > 0 ? value.toLocaleString() : '';
+        }
+      },
+
       tooltip: {
         backgroundColor: '#1e293b',
         padding: 12,

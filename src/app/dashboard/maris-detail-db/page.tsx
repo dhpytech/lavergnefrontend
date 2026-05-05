@@ -129,6 +129,7 @@ export default function EmployeeDashboard() {
               activeId={activeMetricId}
               onSelect={setActiveMetricId}
               configs={METRIC_CONFIGS}
+              type={chartType}
             />
           </div>
         </aside>

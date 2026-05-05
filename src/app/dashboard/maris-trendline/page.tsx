@@ -3,8 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import { FactoryTrendChart } from '@/src/components/dashboard/FactoryTrendChart';
 import { MiniTrendChart } from '@/src/components/dashboard/MiniTrendChart';
+import { getActiveMonth} from "@/src/constants/FormatDateTime";
 
-// GIỮ NGUYÊN HARDCODE CONFIG CỦA BẠN
+
 const chartConfigurations = [
   {
     id: 'TOTAL_PROD',
@@ -48,6 +49,12 @@ const chartConfigurations = [
     menuTitle: 'NUM_SHIFTS',
     datasets: [{ label: 'NUM_SHIFTS (shifts)', dataPath: 'SUMMARY.total_shifts', borderColor: '#3b82f6', backgroundColor: 'transparent' }]
   },
+  {
+    id: 'NET PER_HOUR',
+    title: 'NET PER HOUR TITLE',
+    menuTitle: 'NET PER HOUR',
+    datasets: [{ label: 'NET PER HOUR (kg/hour)', dataPath: 'SUMMARY.net_per_hour', borderColor: '#3b82f6', backgroundColor: 'transparent' }]
+  },
 ];
 
 export default function MarisTrendlineDashboard() {
@@ -61,13 +68,16 @@ export default function MarisTrendlineDashboard() {
     return `${year}-${month}-${day}`;
   };
 
-  const now = new Date();
-  const firstDayOfYear = new Date(now.getFullYear(), 0, 1);
-
-  const [dates, setDates] = useState({
-    startDate: getFormattedDate(firstDayOfYear),
-    endDate: getFormattedDate(now),
+  const [dates, setDates] = useState(() => {
+    const { startDate, endDate } = getActiveMonth();
+    return {
+      start: startDate,
+      end: endDate,
+    };
   });
+
+  const startDate = dates.start
+  const endDate = dates.end
 
   const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
   const fetchData = async () => {
@@ -93,9 +103,9 @@ export default function MarisTrendlineDashboard() {
         <div className="flex items-center space-x-10">
           <h1 className="text-xl font-black tracking-tighter text-slate-900 italic">LAVERNE <span className="text-blue-600">VN</span></h1>
           <div className="flex items-center bg-slate-100 rounded-full px-4 py-1.5 border border-slate-200">
-             <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="bg-transparent text-[11px] font-bold outline-none text-slate-600"/>
+             <input type="date" value={startDate} onChange={e => setDates({...dates, start: e.target.value})} className="bg-transparent text-[11px] font-bold outline-none text-slate-600"/>
              <span className="mx-2 text-slate-300">→</span>
-             <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="bg-transparent text-[11px] font-bold outline-none text-slate-600"/>
+             <input type="date" value={endDate} onChange={e => setDates({...dates, end: e.target.value})} className="bg-transparent text-[11px] font-bold outline-none text-slate-600"/>
              <button onClick={fetchData} className="ml-4 bg-blue-600 text-white text-[9px] font-black px-4 py-1 rounded-full uppercase tracking-widest shadow-sm hover:bg-blue-700 transition-all">Update</button>
           </div>
         </div>
@@ -107,12 +117,6 @@ export default function MarisTrendlineDashboard() {
         {/* MAIN CONTENT: flex-col và overflow-hidden để ép nội dung con */}
         <main className="flex-1 p-6 pr-3 flex flex-col min-w-0 overflow-hidden">
           <div className="flex-1 bg-white rounded-2xl shadow-sm border border-slate-200 p-8 flex flex-col relative overflow-hidden">
-
-            {/* INDICATOR */}
-            <div className="absolute top-6 right-8 flex flex-col items-end pointer-events-none">
-              <div className="h-1.5 w-12 bg-blue-600 rounded-full mb-1 shadow-[0_0_10px_rgba(37,99,235,0.3)]"></div>
-              <span className="text-[9px] font-black text-blue-600/40 uppercase tracking-widest">Active View</span>
-            </div>
 
             <div className="mb-6 shrink-0 flex items-center justify-between">
               <div>
@@ -171,7 +175,7 @@ export default function MarisTrendlineDashboard() {
                     {activeChartId === config.id && <div className="w-2 h-2 rounded-full bg-blue-600 shadow-[0_0_8px_rgba(37,99,235,0.4)]"/>}
                   </div>
                   <div className="h-16 w-full pointer-events-none p-1 ml-1 overflow-hidden">
-                    <MiniTrendChart data={apiData} datasetsConfig={config.datasets}/>
+                    <MiniTrendChart data={apiData} datasetsConfig={config.datasets} type={chartType}/>
                   </div>
                 </div>
             ))}

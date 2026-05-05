@@ -1,16 +1,18 @@
 "use client";
-import { Line } from 'react-chartjs-2';
+import {Bar, Line} from 'react-chartjs-2';
 import { Chart as ChartJS, registerables } from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-ChartJS.register(...registerables);
+ChartJS.register(...registerables, ChartDataLabels);
 
 interface MiniChartProps {
   data: any;
   title: string;
   datasetsConfig: any[];
+  type?: 'line' | 'bar';
 }
 
-export const MiniTrendChart = ({ data, title, datasetsConfig }: MiniChartProps) => {
+export const MiniTrendChart = ({ data, title, datasetsConfig,type = 'line' }: MiniChartProps) => {
   const months = Object.keys(data);
 
   const chartData = {
@@ -32,6 +34,9 @@ export const MiniTrendChart = ({ data, title, datasetsConfig }: MiniChartProps) 
       }),
       borderWidth: 1.5,
       pointRadius: 1,
+      backgroundColor: type == 'bar'
+        ? config.borderColor.replace('rgb', 'rgba').replace(')', ', 0.8)')
+        : config.backgroundColor,
     })),
   };
 
@@ -40,24 +45,71 @@ export const MiniTrendChart = ({ data, title, datasetsConfig }: MiniChartProps) 
     maintainAspectRatio: false,
     plugins: {
       legend: { display: false },
+      datalabels: {
+        display: false,
+        align: 'top',
+        anchor: 'end',
+        offset: 4,
+        color: '#64748b',
+        font: {
+          size: 15,
+          weight: 'bold',
+        },
+        formatter: (value: number) => {
+          return value > 0 ? value.toLocaleString() : '';
+        }
+      },
+
       title: { display: false },
       tooltip: { enabled: false },
       grid: { display: true },
       },
 
     scales: {
-      x: { display: false},
-      y: { display: true },
+      x: {
+        display: true,
+        grid: {
+          display: true,
+          drawOnChartArea: true,
+          drawTicks: false,
+          color: '#f1f5f9'
+        },
+        ticks: {
+          display: false
+        },
+        border: {
+          display: false
+        }
       },
+      y: {
+        display: true,
+        grid: {
+          display: true,
+          drawOnChartArea: true,
+          drawTicks: false,
+          color: '#f1f5f9'
+        },
+        ticks: {
+          display: true
+        },
+        border: {
+          display: false
+        }
+      },
+    },
     elements: {
     line: {
-      tension: 0.3
+      tension: 0.1
       }
     }
   };
   return (
     <div className="h-full w-full">
-      <Line data={chartData} options={options} />
+      {type === 'line' ? (
+        <Line data={chartData} options={options}/>
+      ) : (
+        <Bar data={chartData} options={options}/>
+      )}
     </div>
   );
 };

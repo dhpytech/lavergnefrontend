@@ -13,18 +13,10 @@ import {
   Filler
 } from 'chart.js';
 import { Line, Bar } from 'react-chartjs-2';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-// Đăng ký các thành phần cần thiết cho Chart.js
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-  Filler
+
+ChartJS.register( CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, Filler, ChartDataLabels,
 );
 
 interface Props {
@@ -56,15 +48,15 @@ export const EmployeeMainChart = ({ data, activeEmps, metricPath, label, type = 
     return {
       label: emp,
       data: months.map(m => data[m].DETAILS?.[emp]?.[metricPath] ?? 0),
-      // Cấu hình cho Line Chart
+
       borderColor: color,
-      backgroundColor: type === 'bar' ? color : `${color}10`, // Đổ màu nhẹ cho vùng dưới line nếu cần
-      fill: type === 'line', // Chỉ fill màu nếu là biểu đồ đường
-      // tension: 0.4,
+      backgroundColor: type === 'bar' ? color : `${color}10`,
+      fill: type === 'line',
+      tension: 0.1,
       pointRadius: 4,
       pointHoverRadius: 6,
       borderWidth: 2,
-      // Cấu hình riêng cho Bar Chart
+
       borderRadius: type === 'bar' ? 4 : 0,
     };
   });
@@ -81,6 +73,22 @@ export const EmployeeMainChart = ({ data, activeEmps, metricPath, label, type = 
       legend: {
         display: true,
       },
+
+      datalabels: {
+        display: true,
+        align: 'top',
+        anchor: 'end',
+        offset: 4,
+        color: '#64748b',
+        font: {
+          size: 15,
+          weight: 'bold',
+        },
+        formatter: (value: number) => {
+          return value > 0 ? value.toLocaleString() : '';
+        }
+      },
+
       tooltip: {
         backgroundColor: '#1e293b',
         padding: 12,
