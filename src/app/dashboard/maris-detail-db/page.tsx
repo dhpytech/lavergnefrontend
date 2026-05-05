@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { EmployeeMainChart } from '@/src/components/dashboard/employee/EmployeeMainChart';
 import { EmployeeSlicer } from '@/src/components/dashboard/employee/EmployeeSlicer';
 import { EmployeeSidebar } from "@/src/components/dashboard/employee/EmployeeSideBar";
+import {getActiveMonth} from "@/src/constants/FormatDateTime"
 
 const METRIC_CONFIGS = [
   { id: 'PROD', label: 'PRODUCTION (KG)', menuTitle: 'PRODUCTION', path: 'prod', color: '#3b82f6' },
@@ -18,7 +19,16 @@ export default function EmployeeDashboard() {
   const [activeEmps, setActiveEmps] = useState<string[]>([]);
   const [activeMetricId, setActiveMetricId] = useState('PROD');
   const [chartType, setChartType] = useState<'line' | 'bar'>('line');
-  const [dates, setDates] = useState({ start: '2025-01-01', end: '2026-04-30' });
+
+
+  const [dates, setDates] = useState(() => {
+    const { startDate, endDate } = getActiveMonth();
+    return {
+      start: startDate,
+      end: endDate,
+    };
+  });
+
 
   const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
   const fetchAll = async () => {

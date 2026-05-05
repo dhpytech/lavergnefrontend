@@ -53,9 +53,22 @@ const chartConfigurations = [
 export default function MarisTrendlineDashboard() {
   const [apiData, setApiData] = useState<any>(null);
   const [activeChartId, setActiveChartId] = useState<string>('TOTAL_PROD');
-  const [chartType, setChartType] = useState<'line' | 'bar'>('line'); // State chuyển đổi
-  const [startDate, setStartDate] = useState('2023-01-01');
-  const [endDate, setEndDate] = useState('2023-12-31');
+  const [chartType, setChartType] = useState<'line' | 'bar'>('line');
+  const getFormattedDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const now = new Date();
+  const firstDayOfYear = new Date(now.getFullYear(), 0, 1);
+
+  const [dates, setDates] = useState({
+    startDate: getFormattedDate(firstDayOfYear),
+    endDate: getFormattedDate(now),
+  });
+
   const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
   const fetchData = async () => {
     try {
