@@ -20,7 +20,11 @@ export default function EmployeeDashboard() {
   const [activeMetricId, setActiveMetricId] = useState('PROD');
   const [chartType, setChartType] = useState<'line' | 'bar'>('line');
 
-
+  const [limits, setLimits] = useState({ upper: 0, under: 0 });
+  const handleMetricChange = (newId: string) => {
+      setActiveMetricId(newId);
+      setLimits({ upper: 0, under: 0 });
+    };
   const [dates, setDates] = useState(() => {
     const { startDate, endDate } = getActiveMonth();
     return {
@@ -41,7 +45,7 @@ export default function EmployeeDashboard() {
       const eJson = await eRes.json();
       setData(dJson);
       setEmployees(eJson);
-      if (eJson.length > 0 && activeEmps.length === 0) setActiveEmps([eJson[0]]);
+      if (eJson.length > 0 && activeEmps.length === 0) setActiveEmps(eJson);
     } catch (e) { console.error(e); }
   };
 
@@ -52,24 +56,44 @@ export default function EmployeeDashboard() {
   const currentMetric = METRIC_CONFIGS.find(m => m.id === activeMetricId) || METRIC_CONFIGS[0];
 
   return (
-    /*
-       CHIẾN THUẬT:
-       - h-[calc(100vh-64px)]: 64px là chiều cao ước tính của thanh Nav xanh (Lavergne VN).
-       - overflow-hidden: Chặn hoàn toàn việc đẩy khung gây ra scrollbar ngoài.
-    */
     <div className="flex flex-col w-full bg-[#F8FAFC] overflow-hidden h-[calc(100vh-90px)]">
-
-      {/* 1. DASHBOARD HEADER (Cố định 56px) */}
       <header className="h-14 bg-white border-b flex items-center justify-between px-8 shrink-0">
         <div className="flex items-center space-x-10">
           <h1 className="text-xl font-black tracking-tighter text-slate-900 italic">
             MARIS <span className="text-blue-600 uppercase">Employee</span>
           </h1>
+
+          <div className="flex items-center space-x-3 bg-slate-50 border border-slate-200 rounded-xl px-4 py-1">
+            <div className="flex items-center space-x-2">
+              <span className="text-[9px] font-black text-red-500 uppercase">Max</span>
+              <input
+                  type="number"
+                  value={limits.upper}
+                  onChange={e => setLimits({...limits, upper: Number(e.target.value)})}
+                  className="w-20 bg-transparent text-[11px] font-bold outline-none text-slate-700"
+              />
+            </div>
+            <div className="w-[1px] h-4 bg-slate-300"/>
+            <div className="flex items-center space-x-2">
+              <span className="text-[9px] font-black text-emerald-500 uppercase">Min</span>
+              <input
+                  type="number"
+                  value={limits.under}
+                  onChange={e => setLimits({...limits, under: Number(e.target.value)})}
+                  className="w-20 bg-transparent text-[11px] font-bold outline-none text-slate-700"
+              />
+            </div>
+          </div>
+
           <div className="flex items-center bg-slate-100 rounded-full px-4 py-1 border border-slate-200">
-             <input type="date" value={dates.start} onChange={e => setDates({...dates, start: e.target.value})} className="bg-transparent text-[11px] font-bold outline-none text-slate-600 w-[110px]"/>
-             <span className="mx-2 text-slate-300">→</span>
-             <input type="date" value={dates.end} onChange={e => setDates({...dates, end: e.target.value})} className="bg-transparent text-[11px] font-bold outline-none text-slate-600 w-[110px]"/>
-             <button onClick={fetchAll} className="ml-4 bg-blue-600 text-white text-[9px] font-black px-4 py-1 rounded-full hover:shadow-md transition-all uppercase">Update</button>
+            <input type="date" value={dates.start} onChange={e => setDates({...dates, start: e.target.value})}
+                   className="bg-transparent text-[11px] font-bold outline-none text-slate-600 w-[110px]"/>
+            <span className="mx-2 text-slate-300">→</span>
+            <input type="date" value={dates.end} onChange={e => setDates({...dates, end: e.target.value})}
+                   className="bg-transparent text-[11px] font-bold outline-none text-slate-600 w-[110px]"/>
+            <button onClick={fetchAll}
+                    className="ml-4 bg-blue-600 text-white text-[9px] font-black px-4 py-1 rounded-full hover:shadow-md transition-all uppercase">Update
+            </button>
           </div>
         </div>
         <div className="text-[10px] font-bold text-slate-400 tracking-widest uppercase">Performance Analytics</div>
@@ -77,17 +101,17 @@ export default function EmployeeDashboard() {
 
       {/* 2. AREA CHỨA BIỂU ĐỒ VÀ SIDEBAR */}
       <div className="flex flex-1 min-h-0 overflow-hidden">
-
-        {/* VÙNG CHỨA BIỂU ĐỒ CHÍNH */}
         <main className="flex-1 p-4 flex flex-col min-w-0 overflow-hidden">
-          <div className="flex-1 bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col relative overflow-hidden">
+          <div
+              className="flex-1 bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col relative overflow-hidden">
 
             {/* Header và Slicer (Phần cố định bên trên biểu đồ) */}
             <div className="shrink-0">
               <div className="mb-4 flex items-center justify-between">
                 <div>
                   <h2 className="text-lg font-bold text-slate-800 leading-tight uppercase">{currentMetric.label}</h2>
-                  <p className="text-slate-400 text-[9px] font-bold uppercase tracking-widest mt-0.5">Efficiency Trendline Analysis</p>
+                  <p className="text-slate-400 text-[9px] font-bold uppercase tracking-widest mt-0.5">Efficiency
+                    Trendline Analysis</p>
                 </div>
                 <div className="flex bg-slate-100 p-1 rounded-xl border border-slate-200">
                   {['line', 'bar'].map((t) => (
@@ -115,6 +139,8 @@ export default function EmployeeDashboard() {
                 metricPath={currentMetric.path}
                 label={currentMetric.label}
                 type={chartType}
+                upperLimit={limits.upper}
+                underLimit={limits.under}
               />
             </div>
           </div>
@@ -125,9 +151,9 @@ export default function EmployeeDashboard() {
           <div className="flex-1 overflow-y-auto pr-1 custom-scrollbar scroll-smooth">
              <EmployeeSidebar
               data={data}
-              activeEmp={activeEmps[0] || ""}
+              activeEmps={activeEmps}
               activeId={activeMetricId}
-              onSelect={setActiveMetricId}
+              onSelect={handleMetricChange}
               configs={METRIC_CONFIGS}
               type={chartType}
             />
