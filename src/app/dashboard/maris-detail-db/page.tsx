@@ -6,15 +6,10 @@ import { EmployeeSlicer } from '@/src/components/dashboard/employee/EmployeeSlic
 import { EmployeeSidebar } from "@/src/components/dashboard/employee/EmployeeSideBar";
 import {getActiveMonth} from "@/src/constants/FormatDateTime"
 
-const METRIC_CONFIGS = [
-  { id: 'PROD', label: 'PRODUCTION (KG)', menuTitle: 'PRODUCTION', path: 'prod', color: '#3b82f6' },
-  { id: 'SCRAP', label: 'SCRAP (KG)', menuTitle: 'SCRAP', path: 'scrap', color: '#ef4444' },
-  { id: 'REJECT', label: 'REJECT (KG)', menuTitle: 'REJECT', path: 'reject', color: '#f59e0b' },
-  { id: 'DLNC', label: 'DLNC(KG)', menuTitle: 'DLNC', path: 'dlnc', color: '#f59e0b' },
-];
-
 export default function EmployeeDashboard() {
   const [data, setData] = useState<any>(null);
+  const [apiData, setApiData] = useState<any>(null);
+
   const [employees, setEmployees] = useState<string[]>([]);
   const [activeEmps, setActiveEmps] = useState<string[]>([]);
   const [activeMetricId, setActiveMetricId] = useState('PROD');
@@ -43,7 +38,7 @@ export default function EmployeeDashboard() {
       ]);
       const dJson = await dRes.json();
       const eJson = await eRes.json();
-      setData(dJson);
+      setApiData(dJson);
       setEmployees(eJson);
       if (eJson.length > 0 && activeEmps.length === 0) setActiveEmps(eJson);
     } catch (e) { console.error(e); }
@@ -51,10 +46,26 @@ export default function EmployeeDashboard() {
 
   useEffect(() => { fetchAll(); }, [dates]);
 
-  if (!data || activeEmps.length === 0) return <div className="p-10 text-slate-300 font-black animate-pulse uppercase tracking-widest">Initialising...</div>;
+    if (!apiData || !apiData.configs || activeEmps.length === 0) {
+    return <div className="p-10 text-slate-300 font-black animate-pulse uppercase tracking-widest">Initialising Dashboard</div>;
+  }
+
+  const METRIC_CONFIGS = apiData.configs.employee || [];
 
   const currentMetric = METRIC_CONFIGS.find(m => m.id === activeMetricId) || METRIC_CONFIGS[0];
+  if (!currentMetric) return <div className="p-10">No Chart Configuration found.</div>;
 
+  
+  // if (!apiData || !apiData.configs) {
+  //   return <div className="h-screen flex items-center justify-center font-bold text-slate-300 uppercase italic tracking-widest">Initialising System...</div>;
+  // }
+  //
+  // const chartConfigurations = apiData.configs.summary || [];
+  // const activeChartConfig = chartConfigurations.find((c: any) => c.id === activeChartId) || chartConfigurations[0];
+  // if (!activeChartConfig) return <div>No Chart Configuration found.</div>;
+  // if (!apiData) return <div className="h-screen flex items-center justify-center font-bold text-slate-300 uppercase">Initialising Dashboard</div>;
+  //
+  //
   return (
     <div className="flex flex-col w-full bg-[#F8FAFC] overflow-hidden h-[calc(100vh-90px)]">
       <header className="h-14 bg-white border-b flex items-center justify-between px-8 shrink-0">
@@ -134,7 +145,7 @@ export default function EmployeeDashboard() {
             {/* PHẦN QUAN TRỌNG: Biểu đồ chiếm nốt diện tích còn lại */}
             <div className="flex-1 min-h-0 w-full relative">
               <EmployeeMainChart
-                data={data}
+                data={apiData.data}
                 activeEmps={activeEmps}
                 metricPath={currentMetric.path}
                 label={currentMetric.label}
@@ -150,7 +161,7 @@ export default function EmployeeDashboard() {
         <aside className="w-[300px] py-4 pr-4 pl-0 h-full shrink-0 flex flex-col overflow-hidden">
           <div className="flex-1 overflow-y-auto pr-1 custom-scrollbar scroll-smooth">
              <EmployeeSidebar
-              data={data}
+              data={apiData.data}
               activeEmps={activeEmps}
               activeId={activeMetricId}
               onSelect={handleMetricChange}

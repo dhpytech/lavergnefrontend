@@ -128,7 +128,7 @@ export default function MarisDashboard() {
                 <div className="h-1 w-12 bg-indigo-500 rounded-full"/>
               </div>
               <div className="flex flex-col gap-4">
-                {statEntries.slice(0, 7).map(([label, stat]: any) => (
+                {statEntries.slice(0, 8).map(([label, stat]: any) => (
                     <StatCard
                         key={label}
                         label={label}
@@ -163,7 +163,7 @@ export default function MarisDashboard() {
                         borderRadius: '12px',
                         border: 'none',
                         boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)'
-                      }}
+                      } as any}
                         formatter={(val: any) => [Number(val).toLocaleString('en-US'), "Volume (KG)"]}
                       />
 
@@ -218,7 +218,7 @@ export default function MarisDashboard() {
               </div>
               {/* Chia lưới 2 cột cho 8 chỉ số để nhìn cân đối */}
               <div className="grid grid-cols-1 gap-3">
-                {statEntries.slice(7, 15).map(([label, stat]: any) => (
+                {statEntries.slice(8, 16).map(([label, stat]: any) => (
                     <div key={label} className="col-span-1">
                       <StatCard
                           label={label}

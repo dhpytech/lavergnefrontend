@@ -6,67 +6,10 @@ import { MiniTrendChart } from '@/src/components/dashboard/MiniTrendChart';
 import { getActiveMonth} from "@/src/constants/FormatDateTime";
 
 
-const chartConfigurations = [
-  {
-    id: 'TOTAL_PROD',
-    title: 'PRODUCTION TREND LINE CHART',
-    menuTitle: 'PRODUCTION',
-    datasets: [{ label: 'PRODUCTION (kg)', dataPath: 'SUMMARY.total_prod', borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.05)', fill: true }]
-  },
-  {
-    id: 'TOTAL_SCRAP',
-    title: 'SCRAP TREND LINE CHART',
-    menuTitle: 'SCRAP',
-    datasets: [{ label: 'SCRAP (kg)', dataPath: 'SUMMARY.total_scrap', borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.05)', fill: true }]
-  },
-  {
-    id: 'TOTAL_DLNC',
-    title: 'DLNC TITLE',
-    menuTitle: 'DLNC',
-    datasets: [{ label: 'DLNC (kg)', dataPath: 'SUMMARY.total_dlnc', borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.05)', fill: true }]
-  },
-  {
-    id: 'TOTAL_REJECT',
-    title: 'REJECT TITLE',
-    menuTitle: 'REJECT',
-    datasets: [{ label: 'REJECT (kg)', dataPath: 'SUMMARY.total_reject', borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.05)', fill: true }]
-  },
-  {
-    id: 'TOTAL_SCREEN',
-    title: 'SCREEN TITLE',
-    menuTitle: 'SCREEN',
-    datasets: [{ label: 'SCREEN (kg)', dataPath: 'SUMMARY.total_screen', borderColor: '#3b82f6', backgroundColor: 'transparent' }]
-  },
-  {
-    id: 'TOTAL_VISSLAB',
-    title: 'VISSLAB TITLE',
-    menuTitle: 'VISSLAB',
-    datasets: [{ label: 'VISSLAB (kg)', dataPath: 'SUMMARY.total_visslab', borderColor: '#3b82f6', backgroundColor: 'transparent' }]
-  },
-  {
-    id: 'TOTAL_NUM_SHIFTS',
-    title: 'NUM_SHIFTS TITLE',
-    menuTitle: 'NUM_SHIFTS',
-    datasets: [{ label: 'NUM_SHIFTS (shifts)', dataPath: 'SUMMARY.total_shifts', borderColor: '#3b82f6', backgroundColor: 'transparent' }]
-  },
-  {
-    id: 'NET PER_HOUR',
-    title: 'NET PER HOUR TITLE',
-    menuTitle: 'NET PER HOUR',
-    datasets: [{ label: 'NET PER HOUR (kg/hour)', dataPath: 'SUMMARY.net_per_hour', borderColor: '#3b82f6', backgroundColor: 'transparent' }]
-  },
-];
-
 export default function MarisTrendlineDashboard() {
   const [apiData, setApiData] = useState<any>(null);
   const [activeChartId, setActiveChartId] = useState<string>('TOTAL_PROD');
   const [chartType, setChartType] = useState<'line' | 'bar'>('line');
-  const getFormattedDate = (date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
 
   const [dates, setDates] = useState(() => {
     const { startDate, endDate } = getActiveMonth();
@@ -89,14 +32,18 @@ export default function MarisTrendlineDashboard() {
   };
 
   useEffect(() => { fetchData(); }, []);
+  if (!apiData || !apiData.configs) {
+    return <div className="h-screen flex items-center justify-center font-bold text-slate-300 uppercase italic tracking-widest">Initialising System...</div>;
+  }
 
-  if (!apiData) return <div className="h-screen flex items-center justify-center font-bold text-slate-300 uppercase">Initialising...</div>;
+  const chartConfigurations = apiData.configs.summary || [];
+  const activeChartConfig = chartConfigurations.find((c: any) => c.id === activeChartId) || chartConfigurations[0];
+  if (!activeChartConfig) return <div>No Chart Configuration found.</div>;
+  if (!apiData) return <div className="h-screen flex items-center justify-center font-bold text-slate-300 uppercase">Initialising Dashboard</div>;
 
-  const activeChartConfig = chartConfigurations.find(c => c.id === activeChartId) || chartConfigurations[0];
 
   return (
-    // CHIỀU CAO: Trừ đi 64px của Nav và ẩn scroll dọc toàn trang
-    <div className="flex flex-col w-full bg-[#F8FAFC] overflow-hidden h-[calc(100vh-64px)]">
+    <div className="flex flex-col w-full bg-[#F8FAFC] overflow-hidden h-[calc(100vh-90px)]">
 
       {/* HEADER */}
       <header className="h-14 bg-white border-b flex items-center justify-between px-8 shrink-0 z-20">
@@ -141,7 +88,7 @@ export default function MarisTrendlineDashboard() {
             {/* VÙNG CHỨA BIỂU ĐỒ CHÍNH: flex-1 min-h-0 */}
             <div className="flex-1 min-h-0 w-full relative">
               <FactoryTrendChart
-                data={apiData}
+                data={apiData.data}
                 title="" // Bỏ title của Chart.js vì đã có tiêu đề custom bên trên
                 datasetsConfig={activeChartConfig.datasets}
                 type={chartType}
@@ -175,7 +122,7 @@ export default function MarisTrendlineDashboard() {
                     {activeChartId === config.id && <div className="w-2 h-2 rounded-full bg-blue-600 shadow-[0_0_8px_rgba(37,99,235,0.4)]"/>}
                   </div>
                   <div className="h-16 w-full pointer-events-none p-1 ml-1 overflow-hidden">
-                    <MiniTrendChart data={apiData} datasetsConfig={config.datasets} type={chartType}/>
+                    <MiniTrendChart data={apiData.data} datasetsConfig={config.datasets} type={chartType}/>
                   </div>
                 </div>
             ))}
