@@ -80,8 +80,22 @@ export default function MarisEnterpriseFullWide() {
   };
 
   const handleEdit = (item: any) => {
+    const normalizedItem = {
+      ...item,
+      stop_time_data: item.stop_time_data?.map((s: any) => ({
+        stopCode: s.stopCode || s.stopTime || "",
+        duration: s.duration || s.hour || 0
+      })) || [],
+      production_data: item.production_data?.map((p: any) => ({
+      ...p,
+      visLab: p.visLab || p.visslab || "0",
+      screenChanger: p.screenChanger || p.screen || "0",
+      outputSetting: String(p.outputSetting || "0")
+      })) || [],
+    };
+
     setEditingId(item.id);
-    reset({ units: [item] });
+    reset({ units: [normalizedItem] }); // Đổ dữ liệu đã chuẩn hóa vào Form
     setIsFormOpen(true);
   };
 

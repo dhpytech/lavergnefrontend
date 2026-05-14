@@ -16,9 +16,14 @@ const unitSchema = z.object({
     outputSetting: z.coerce.number().default(0),
   })).default([]),
   stop_time_data: z.array(z.object({
-    stopCode: z.string().min(1),
-    duration: z.coerce.number().min(0),
-  })).default([]),
+    stopTime: z.string().optional(),
+    stopCode: z.string().optional(),
+    hour: z.coerce.number().optional(),
+    duration: z.coerce.number().optional(),
+  })).transform((val) => val.map(item => ({
+    stopTime: item.stopTime || item.stopCode || "",
+    hour: item.hour ?? item.duration ?? 0
+  }))).default([]),
   problems: z.array(z.object({
     problemCode: z.string().min(1),
     duration: z.coerce.number().min(0),
