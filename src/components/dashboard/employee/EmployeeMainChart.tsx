@@ -19,6 +19,7 @@ interface Props {
   metricPath: string;
   label: string;
   type: 'line' | 'bar';
+  isPercentage?: boolean;
   upperLimit?: number;
   underLimit?: number;
 }
@@ -27,7 +28,7 @@ const CHART_COLORS = [
     '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4',
 ];
 
-export const EmployeeMainChart = ({ data, activeEmps, metricPath, label, type = 'line', upperLimit, underLimit}: Props) => {
+export const EmployeeMainChart = ({ data, activeEmps, metricPath, label, type = 'line', isPercentage = false,upperLimit, underLimit}: Props) => {
   const months = Object.keys(data || {}).sort();
   const datasets = activeEmps.map((emp, index) => {
     const color = CHART_COLORS[index % CHART_COLORS.length];
@@ -108,7 +109,10 @@ export const EmployeeMainChart = ({ data, activeEmps, metricPath, label, type = 
           weight: 'bold',
         },
         formatter: (value: number) => {
-          return value > 0 ? value.toLocaleString() : '';
+          if (value === 0) return '';
+          return isPercentage
+              ? `${(value*100).toFixed(1)}%`
+              : value.toLocaleString();
         }
       },
 
@@ -119,6 +123,15 @@ export const EmployeeMainChart = ({ data, activeEmps, metricPath, label, type = 
         bodyFont: { size: 12 },
         cornerRadius: 8,
         usePointStyle: true,
+        callback: {
+          label: (context: any) => {
+            const val = context.raw;
+            const label = context.dataset.label || '';
+            return isPercentage
+            ? `${label}: ${(val * 100).toFixed(2)}%`
+            :  `${label}: ${val.toLocaleString()}`;
+          }
+        }
       }
     },
     scales: {
@@ -131,7 +144,12 @@ export const EmployeeMainChart = ({ data, activeEmps, metricPath, label, type = 
         ticks: {
           font: { size: 10, weight: '600' },
           color: '#94a3b8',
-          callback: (value: number) => value.toLocaleString() + ' kg',
+          callback: function (value: number) {
+            if (isPercentage) {
+              return (value * 100).toFixed(0) + '%';
+            }
+            return value.toLocaleString();
+          }
         }
       },
       x: {
@@ -144,7 +162,6 @@ export const EmployeeMainChart = ({ data, activeEmps, metricPath, label, type = 
         }
       }
     },
-    // Hiệu ứng mượt mà khi chuyển đổi type
     animation: {
       duration: 750,
       easing: 'easeInOutQuart'

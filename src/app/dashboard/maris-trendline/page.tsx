@@ -89,8 +89,9 @@ export default function MarisTrendlineDashboard() {
             <div className="flex-1 min-h-0 w-full relative">
               <FactoryTrendChart
                 data={apiData.data}
-                title="" // Bỏ title của Chart.js vì đã có tiêu đề custom bên trên
+                title=""
                 datasetsConfig={activeChartConfig.datasets}
+                isPercentage={['OEE', 'YIELD', 'USED'].includes(activeChartId)}
                 type={chartType}
               />
             </div>

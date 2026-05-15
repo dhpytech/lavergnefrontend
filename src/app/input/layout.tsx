@@ -9,7 +9,7 @@ const menu = [
   { label: 'INFORMATION', path: '/info/main' , icon: Info, color: 'text-blue-600'  },
   { label: 'DATA INPUT', path: '/input/main', icon: Keyboard, color: 'text-green-600'  },
   { label: 'DASHBOARD', path: '/dashboard/main', icon: ChartNoAxesCombined, color: 'text-yellow-600'  },
-  { label: 'EXPORT FILE', path: '/isofile' , icon: FileSliders, color: 'text-violet-600'  },
+  { label: 'EXPORT FILE', path: '/isofile/main' , icon: FileSliders, color: 'text-violet-600'  },
 ];
 
 export default function HomeLayout({ children }: { children: React.ReactNode }) {

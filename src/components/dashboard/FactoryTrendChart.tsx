@@ -12,9 +12,10 @@ interface TrendChartProps {
   data: any;
   datasetsConfig: any[];
   type?: 'line' | 'bar';
+  isPercentage?: boolean;
 }
 
-export const FactoryTrendChart = ({ data, datasetsConfig, type = 'line' }: TrendChartProps) => {
+export const FactoryTrendChart = ({ data, datasetsConfig, type = 'line',isPercentage = false }: TrendChartProps) => {
   const months = Object.keys(data || {}).sort();
 
   const chartData = {
@@ -55,7 +56,7 @@ export const FactoryTrendChart = ({ data, datasetsConfig, type = 'line' }: Trend
     layout: {
       padding: {
         right: 40,
-        top: 20
+        top: 40
       },
     },
     plugins: {
@@ -71,7 +72,10 @@ export const FactoryTrendChart = ({ data, datasetsConfig, type = 'line' }: Trend
           weight: 'bold',
         },
         formatter: (value: number) => {
-          return value > 0 ? value.toLocaleString() : '';
+          if (value === 0) return '';
+          return isPercentage
+            ? `${(value * 100).toFixed(1)}%`
+            : value.toLocaleString();
         }
       },
 
@@ -81,8 +85,15 @@ export const FactoryTrendChart = ({ data, datasetsConfig, type = 'line' }: Trend
         cornerRadius: 8,
         titleFont: { size: 14, weight: 'bold' },
         bodyFont: { size: 13 },
+
         callbacks: {
-          label: (context: any) => ` ${context.dataset.label}: ${context.raw.toLocaleString()} kg`
+          label: (context: any) => {
+            const val = context.raw;
+            const label = context.dataset.label || '';
+            return isPercentage
+              ? ` ${label}: ${(val * 100).toFixed(2)}%`
+              : ` ${label}: ${val.toLocaleString()}`;
+          }
         }
       }
     },
@@ -95,9 +106,15 @@ export const FactoryTrendChart = ({ data, datasetsConfig, type = 'line' }: Trend
         beginAtZero: true,
         grid: { color: '#f1f5f9' },
         ticks: {
+          padding: 20,
           font: { size: 10, weight: '600' },
           color: '#94a3b8',
-          callback: (val: any) => val.toLocaleString()
+          callback: function(value) {
+            if (isPercentage) {
+              return (value * 100).toFixed(0) + '%';
+            }
+            return value.toLocaleString();
+          }
         }
       },
     },

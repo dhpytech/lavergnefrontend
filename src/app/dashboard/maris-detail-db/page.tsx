@@ -55,17 +55,6 @@ export default function EmployeeDashboard() {
   const currentMetric = METRIC_CONFIGS.find(m => m.id === activeMetricId) || METRIC_CONFIGS[0];
   if (!currentMetric) return <div className="p-10">No Chart Configuration found.</div>;
 
-  
-  // if (!apiData || !apiData.configs) {
-  //   return <div className="h-screen flex items-center justify-center font-bold text-slate-300 uppercase italic tracking-widest">Initialising System...</div>;
-  // }
-  //
-  // const chartConfigurations = apiData.configs.summary || [];
-  // const activeChartConfig = chartConfigurations.find((c: any) => c.id === activeChartId) || chartConfigurations[0];
-  // if (!activeChartConfig) return <div>No Chart Configuration found.</div>;
-  // if (!apiData) return <div className="h-screen flex items-center justify-center font-bold text-slate-300 uppercase">Initialising Dashboard</div>;
-  //
-  //
   return (
     <div className="flex flex-col w-full bg-[#F8FAFC] overflow-hidden h-[calc(100vh-90px)]">
       <header className="h-14 bg-white border-b flex items-center justify-between px-8 shrink-0">
@@ -150,6 +139,7 @@ export default function EmployeeDashboard() {
                 metricPath={currentMetric.path}
                 label={currentMetric.label}
                 type={chartType}
+                isPercentage={["oee", "percent_yield", "used"].includes(activeMetricId)}
                 upperLimit={limits.upper}
                 underLimit={limits.under}
               />
