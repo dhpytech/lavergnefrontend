@@ -14,7 +14,8 @@ export default function MarisExcelDailyReport() {
   const fetchReportData = async () => {
     setLoading(true);
     try {
-      const url = `http://127.0.0.1:8000/entries/daily-report/?date=${selectedDate}`;
+      const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://gunicorn-lavergnebackendwsgi-production.up.railway.app';
+      const url = `${BASE_URL}/entries/daily-report/?date=${selectedDate}`;
       const res = await fetch(url);
       if (res.ok) {
         const jsonRes = await res.json();
