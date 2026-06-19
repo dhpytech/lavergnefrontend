@@ -192,15 +192,16 @@ export default function MarisEnterpriseFullWide() {
                                   <span>Reject: <b>{p.reject}</b></span>
                                   <span>Scrap: <b className="text-red-500">{p.scrap}</b></span>
                                   <span>Screen: <b>{p.screen || p.screenChanger}</b></span>
-                                  <span className="text-blue-500">Vis-Lab: <b>{p.visslab||p.visLab}</b></span>
+                                  <span className="text-blue-500">Vis-Lab: <b>{p.visslab || p.visLab}</b></span>
                                   <span>Output-Setting: <b>{p.outputSetting}</b></span>
+                                  <span>Outsource: <b>{p.outsource === true || p.outsource === "true" ? "YES" : "NO"}</b></span>
                                 </div>
                               </div>
                           ))}
                         </div>
 
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                          <div className="bg-red-50/50 border border-red-100 rounded-2xl p-4">
+                        <div className="bg-red-50/50 border border-red-100 rounded-2xl p-4">
                             <p className="text-[9px] font-black text-red-600 uppercase mb-2 italic">Stop Time Log</p>
                             {item.stop_time_data?.length > 0 ? item.stop_time_data.map((s: any, idx: number) => {
                               const timeBasedCodes = ['# ORDER CHANGE', '# OF MECHANICAL FAILURE'];

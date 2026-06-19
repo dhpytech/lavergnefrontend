@@ -47,7 +47,7 @@ export function MarisFormUnit({ index, control, register, onRemove, metadata }: 
                 { value: 'Day', label: 'CA NGÀY' },
                 { value: 'Night', label: 'CA ĐÊM' }
               ]}
-              className="min-w-[120px] bg-slate-50" // Thêm nền xám nhẹ cho header
+              // className="min-w-[120px] bg-slate-50"
                 />
       </div>
 
@@ -56,7 +56,7 @@ export function MarisFormUnit({ index, control, register, onRemove, metadata }: 
         <div className="overflow-x-auto">
           <table className="w-full text-[11px] font-bold text-slate-800">
             <thead>
-              <tr className="text-slate-900 border-b border-slate-300">
+            <tr className="text-slate-900 border-b border-slate-300">
                 <th className="pb-3 text-left">Product Code</th>
                 <th className="pb-3 text-center">Good Product</th>
                 <th className="pb-3 text-center">DLNC</th>
@@ -65,12 +65,13 @@ export function MarisFormUnit({ index, control, register, onRemove, metadata }: 
                 <th className="pb-3 text-center">Reject</th>
                 <th className="pb-3 text-center">Scrap</th>
                 <th className="pb-3 text-center">Screen Changer</th>
-                <th className="pb-3 text-center text-blue-700">VisLab</th>
-                <th className="pb-3 text-center bg-blue-50">Output Setting</th>
+                <th className="pb-3 text-center">VisLab</th>
+                <th className="pb-3 text-center">Output Setting</th>
+                <th className="pb-3 text-center">Outsource</th>
                 <th className="pb-3"></th>
-              </tr>
+            </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100">
               {fields.map((field, idx) => {
                 const total = (Number(watchProd?.[idx]?.goodPro) || 0) + (Number(watchProd?.[idx]?.dlnc) || 0);
                 return (
@@ -103,7 +104,8 @@ export function MarisFormUnit({ index, control, register, onRemove, metadata }: 
                         </td>
 
                         <td className="p-1">
-                            <div className="w-full h-[27px] flex items-center justify-center bg-blue-50 border border-blue-300 rounded text-[12px] font-black text-blue-900 transition-colors hover:bg-blue-100">
+                            <div
+                                className="w-full h-[27px] flex items-center justify-center bg-blue-50 border border-blue-300 rounded text-[12px] font-black text-blue-900 transition-colors hover:bg-blue-100">
                                 {total.toLocaleString()}
                             </div>
                         </td>
@@ -122,14 +124,25 @@ export function MarisFormUnit({ index, control, register, onRemove, metadata }: 
                             placeholder="Input text"/></td>
                         <td className="p-1"><input
                             type="number" {...register(`units.${index}.production_data.${idx}.visLab` as any)}
-                            className="w-full border border-blue-400 rounded p-1 text-center" placeholder="Input text"/>
+                            className="w-full border border-slate-300 rounded p-1 text-center" placeholder="Input text"/>
                         </td>
                         <td className="p-1 bg-blue-50/50">
                             <input
                                 type="number" {...register(`units.${index}.production_data.${idx}.outputSetting` as any)}
-                                className="w-full border border-blue-400 rounded p-1 text-center font-bold text-blue-800 bg-white"
+                                className="w-full border border-slate-300 rounded p-1 text-center font-bold text-blue-800 bg-white"
                                 placeholder="Input text"/>
                         </td>
+
+                        <td className="p-1 bg-blue-50/50">
+                            <select
+                                {...register(`units.${index}.production_data.${idx}.outsource` as any)}
+                                className="w-full border border-slate-300 rounded p-1 text-center font-bold text-black-800 bg-white"
+                            >
+                                <option className ="font-bold" value="false">NO</option>
+                                <option className ="font-bold" value="true">YES</option>
+                            </select>
+                        </td>
+
                         <td className="p-1 text-center">
                             <button type="button" onClick={() => remove(idx)}
                                     className="text-slate-300 hover:text-red-500"><Minus size={18}/></button>
@@ -137,7 +150,7 @@ export function MarisFormUnit({ index, control, register, onRemove, metadata }: 
                     </tr>
                 )
               })}
-            </tbody>
+              </tbody>
           </table>
             <button type="button" onClick={() => append({
                 productCode: '',
@@ -147,7 +160,8 @@ export function MarisFormUnit({ index, control, register, onRemove, metadata }: 
                 reject: null,
                 screenChanger: null,
                 visLab: null,
-                outputSetting: null
+                outputSetting: null,
+                outsource: false,
             } as any)}
                     className="mt-3 px-4 py-1.5 bg-slate-800 text-white rounded text-[10px] uppercase font-bold hover:bg-black transition-colors">
             + Add Row

@@ -14,6 +14,7 @@ const unitSchema = z.object({
     screenChanger: z.coerce.number().default(0),
     visLab: z.coerce.number().default(0),
     outputSetting: z.coerce.number().default(0),
+    outsource: z.coerce.boolean().default(false),
   })).default([]),
   stop_time_data: z.array(z.object({
     stopTime: z.string().optional(),

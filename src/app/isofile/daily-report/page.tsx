@@ -110,7 +110,6 @@ export default function MarisExcelDailyReport() {
 
   return (
     <div className="flex min-h-screen bg-slate-200 text-slate-900 font-sans antialiased">
-
       <aside className="w-60 bg-[#0070c0] text-white flex flex-col justify-between shrink-0 p-4 shadow-xl">
         <div className="space-y-6">
           <div className="bg-blue-900/30 p-3 rounded text-center">
@@ -134,93 +133,121 @@ export default function MarisExcelDailyReport() {
         {loading ? (
           <div className="text-center py-24 font-mono text-xs text-slate-500 animate-pulse uppercase tracking-wider">Loading...</div>
         ) : report ? (
-          <div className="max-w-4xl mx-auto bg-white border border-slate-400 p-6 shadow-2xl text-slate-900 font-sans text-xs">
-            <ExcelReportHeader />
-            <ExcelReportMeta selectedDate={selectedDate} productCodes={getVal('total', 'product_codes', 'plain')} />
+            <div
+                className="max-w-4xl mx-auto bg-white border border-slate-400 p-6 shadow-2xl text-slate-900 font-sans text-xs">
+              <ExcelReportHeader/>
+              <ExcelReportMeta selectedDate={selectedDate} productCodes={getVal('total', 'product_codes', 'plain')}/>
 
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse border border-slate-800 text-[11px]">
-                <thead>
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse border border-slate-800 text-[11px]">
+                  <thead>
                   <tr className="bg-slate-100 text-slate-800 font-bold border-b border-slate-800">
-                    <th className="border border-slate-400 p-1.5 text-left italic font-serif text-xs">Items Description</th>
+                    <th className="border border-slate-400 p-1.5 text-left italic font-serif text-xs">Items
+                      Description
+                    </th>
                     <th className="border border-slate-400 p-1.5 text-center w-[18%]">Day</th>
                     <th className="border border-slate-400 p-1.5 text-center w-[18%]">Night</th>
                     <th className="border border-slate-400 p-1.5 text-center w-[20%]">Total</th>
                   </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-300 font-mono text-center">
-                  <ExcelReportRow label="Operator" apiKey="employees" getVal={getVal} formatType="plain" />
-                  <ExcelReportRow label="Product Code" apiKey="product_codes" getVal={getVal} formatType="plain" />
-                  <ExcelReportRow label="Net prod: Good product" apiKey="goodPro" getVal={getVal} />
+                  </thead>
+                  <tbody className="divide-y divide-slate-300 font-mono text-center">
+                  <ExcelReportRow label="Operator" apiKey="employees" getVal={getVal} formatType="plain"/>
+                  <ExcelReportRow label="Product Code" apiKey="product_codes" getVal={getVal} formatType="plain"/>
+                  <ExcelReportRow label="Net prod: Good product" apiKey="goodPro" getVal={getVal}/>
 
-                  <ExcelReportRow label="TOTAL DLNC" apiKey="dlnc" getVal={getVal} customRowClass="font-bold bg-slate-200 text-amber-800" customTotalClass="text-amber-700" />
+                  <ExcelReportRow label="TOTAL DLNC" apiKey="dlnc" getVal={getVal}
+                                  customRowClass="font-bold bg-slate-200 text-amber-800"
+                                  customTotalClass="text-amber-700"/>
 
                   {activeDlncCases.length > 0 ? (
-                    activeDlncCases.map((caseName) => (
-                      <tr key={caseName} className="text-slate-500 text-[10px]">
-                        <td className="border border-slate-400 p-1 text-left pl-4 italic font-serif">- {caseName}</td>
-                        <td className="border border-slate-400 p-1">{getDlncShiftVal('day', caseName)}</td>
-                        <td className="border border-slate-400 p-1">{getDlncShiftVal('night', caseName)}</td>
-                        <td className="border border-slate-400 p-1 font-bold text-slate-800">{getDlncShiftVal('total', caseName)}</td>
-                      </tr>
-                    ))
+                      activeDlncCases.map((caseName) => (
+                          <tr key={caseName} className="text-slate-500 text-[10px]">
+                            <td className="border border-slate-400 p-1 text-left pl-4 italic font-serif">- {caseName}</td>
+                            <td className="border border-slate-400 p-1">{getDlncShiftVal('day', caseName)}</td>
+                            <td className="border border-slate-400 p-1">{getDlncShiftVal('night', caseName)}</td>
+                            <td className="border border-slate-400 p-1 font-bold text-slate-800">{getDlncShiftVal('total', caseName)}</td>
+                          </tr>
+                      ))
                   ) : (
-                    <tr className="text-slate-400 text-[10px] italic bg-slate-50/30">
-                      <td colSpan={4} className="border border-slate-400 p-1.5 text-center text-slate-500 tracking-wider">
-                        - No Dlnc Case -
-                      </td>
-                    </tr>
+                      <tr className="text-slate-400 text-[10px] italic bg-slate-50/30">
+                        <td colSpan={4}
+                            className="border border-slate-400 p-1.5 text-center text-slate-500 tracking-wider">
+                          - No Dlnc Case -
+                        </td>
+                      </tr>
                   )}
 
-                  <ExcelReportRow label="TOTAL SCRAP" apiKey="scrap" getVal={getVal} customRowClass="font-bold bg-slate-200 text-amber-800" customTotalClass="font-bold" />
-                  <ExcelReportRow label="Scrap from Die" apiKey="scrapDie" getVal={getVal} customTotalClass="font-bold" />
-                  <ExcelReportRow label="Scrap from Screen Changer" apiKey="screen" getVal={getVal} customTotalClass="font-bold" />
-                  <ExcelReportRow label="Reject" apiKey="reject" getVal={getVal} customTotalClass="font-bold" />
+                  <ExcelReportRow label="TOTAL SCRAP" apiKey="scrap" getVal={getVal}
+                                  customRowClass="font-bold bg-slate-200 text-amber-800" customTotalClass="font-bold"/>
+                  <ExcelReportRow label="Scrap from Die" apiKey="scrapDie" getVal={getVal}
+                                  customTotalClass="font-bold"/>
+                  <ExcelReportRow label="Scrap from Screen Changer" apiKey="screen" getVal={getVal}
+                                  customTotalClass="font-bold"/>
+                  <ExcelReportRow label="Reject" apiKey="reject" getVal={getVal} customTotalClass="font-bold"/>
 
-                  <ExcelReportRow label="PROD BRUT" apiKey="output" getVal={getVal} customRowClass="font-bold bg-yellow-200 text-amber-800" customTotalClass="text-amber-700" />
-                  <ExcelReportRow label="Yield" apiKey="yield_pct" getVal={getVal} formatType="percent" customRowClass="text-slate-900 font-black border-y border-slate-800 font-bold" />
+                  <ExcelReportRow label="PROD BRUT" apiKey="output" getVal={getVal}
+                                  customRowClass="font-bold bg-yellow-200 text-amber-800"
+                                  customTotalClass="text-amber-700"/>
+                  <ExcelReportRow label="Yield" apiKey="yield_pct" getVal={getVal} formatType="percent"
+                                  customRowClass="text-slate-900 font-black border-y border-slate-800 font-bold"/>
 
-                  <ExcelReportRow label="Number of kg/h" apiKey="net_hr" getVal={getVal} customTotalClass="font-bold" />
-                  <ExcelReportRow label="Number of stopping hours (h)" apiKey="stop_hr" getVal={getVal} customTotalClass="bg-slate-50 font-bold" />
-                  <ExcelReportRow label="Util.%" apiKey="used_pct" getVal={getVal} formatType="percent" customTotalClass="bg-slate-50 font-bold" />
-                  <ExcelReportRow label="Rate" apiKey="rate" getVal={getVal} formatType="number" customTotalClass="bg-slate-50 font-bold" />
-                  <ExcelReportRow label="OEE" apiKey="oee_pct" getVal={getVal} formatType="percent" customTotalClass="bg-slate-50 font-black text-emerald-700" />
+                  <ExcelReportRow label="Number of kg/h" apiKey="net_hr" getVal={getVal} customTotalClass="font-bold"/>
+                  <ExcelReportRow label="Number of stopping hours (h)" apiKey="stop_hr" getVal={getVal}
+                                  customTotalClass="bg-slate-50 font-bold"/>
+                  <ExcelReportRow label="Util.%" apiKey="used_pct" getVal={getVal} formatType="percent"
+                                  customTotalClass="bg-slate-50 font-bold"/>
+                  {/*<ExcelReportRow label="Rate" apiKey="rate" getVal={getVal} formatType="number" customTotalClass="bg-slate-50 font-bold" />*/}
+                  <ExcelReportRow label="OEE" apiKey="oee_pct" getVal={getVal} formatType="percent"
+                                  customTotalClass="bg-slate-50 font-black text-emerald-700"/>
 
-                  <ExcelReportRow label="Screw rejections SLAB" apiKey="visslab" getVal={getVal} formatType="number" customTotalClass="bg-slate-50 font-black text-emerald-700" />
-                  <ExcelReportRow label="% Screw rejections SLAB" apiKey="visslabPercent" getVal={getVal} formatType="percent" customTotalClass="bg-slate-50 font-black text-emerald-700" />
-                </tbody>
-              </table>
-            </div>
+                  <ExcelReportRow label="Screw rejections SLAB" apiKey="visslab" getVal={getVal} formatType="number"
+                                  customTotalClass="bg-slate-50 font-black text-emerald-700"/>
+                  <ExcelReportRow label="% Screw rejections SLAB" apiKey="visslabPercent" getVal={getVal}
+                                  formatType="percent" customTotalClass="bg-slate-50 font-black text-emerald-700"/>
+                  </tbody>
+                </table>
+              </div>
 
-            {/* BẢNG LOSTS KGS */}
-            <div className="mt-5">
-              <div className="flex justify-between items-end mb-1 font-sans"><span className="font-bold text-xs underline">Losts</span></div>
-              <table className="w-full border-collapse border border-slate-800 text-[11px] font-mono text-center">
-                <tbody>
-                  <ExcelReportRow label="For Yield" apiKey="lost_yield" getVal={getVal} customTotalClass="bg-slate-50 font-bold" />
-                  <ExcelReportRow label="For Disponibility" apiKey="lost_disp" getVal={getVal} customRowClass="bg-slate-50/50" customTotalClass="font-bold" />
-                </tbody>
-              </table>
-            </div>
+              {/* BẢNG LOSTS KGS */}
+              <div className="overflow-x-auto mt-5">
+                <table className="w-full border-collapse border border-slate-50 text-[11px]">
+                  <thead>
+                  <tr className="text-slate-800 font-bold border-b border-slate-50">
+                    <th className="p-1.5 text-left italic font-serif text-xs">Losts
+                    </th>
+                    <th className="w-[18%]"></th>
+                    <th className="w-[18%]"></th>
+                    <th className="w-[20%]"></th>
+                  </tr>
+                  </thead>
 
-            {/* 🛠️ 3. LOG CHI TIẾT SỰ CỐ THEO CA COMPONENT */}
-            <div className="mt-5 space-y-4 font-sans text-[11px]">
-              <ExcelShiftLogs shiftType="day" logs={dayLogs} />
-              <ExcelShiftLogs shiftType="night" logs={nightLogs} />
-            </div>
+                  <tbody className="divide-y divide-slate-300 font-mono text-center">
+                  <ExcelReportRow label="For Yield" apiKey="scrap" getVal={getVal} customTotalClass="bg-slate-50 font-bold" />
+                  <ExcelReportRow label="For Disponibility" apiKey="lost_disp" getVal={getVal} customRowClass="bg-slate-50/50" customTotalClass="font-bold"/>
+                  </tbody>
+                </table>
+              </div>
 
-            {/* SCRAP MARIS & OUTPUT CAPACITY */}
-            <div className="mt-5">
-              <table className="w-full border-collapse border border-slate-800 text-[11px] font-mono text-center">
-                <thead>
+              {/* 🛠️ 3. LOG CHI TIẾT SỰ CỐ THEO CA COMPONENT */}
+              <div className="mt-5 space-y-4 font-sans text-[11px]">
+                <ExcelShiftLogs shiftType="day" logs={dayLogs}/>
+                <ExcelShiftLogs shiftType="night" logs={nightLogs}/>
+              </div>
+
+              {/* SCRAP MARIS & OUTPUT CAPACITY */}
+              <div className="mt-5">
+                <table className="w-full border-collapse border border-slate-800 text-[11px] font-mono text-center">
+                  <thead>
                   <tr className="bg-slate-100 font-sans font-bold border-b border-slate-400 text-[10px]">
-                    <th className="border border-slate-400 p-1 text-left font-serif font-normal text-xs w-[44%]">Scrap Maris (KG) :</th>
+                    <th className="border border-slate-400 p-1 text-left font-serif font-normal text-xs w-[44%]">Scrap
+                      Maris (KG) :
+                    </th>
                     <th className="border border-slate-400 p-1 w-[18%]">DAY SHIFT</th>
                     <th className="border border-slate-400 p-1 w-[18%]">NIGHT SHIFT</th>
                     <th className="border border-slate-400 p-1 w-[20%]">TOTAL</th>
                   </tr>
-                </thead>
-                <tbody>
+                  </thead>
+                  <tbody>
                   <tr>
                     <td className="border border-slate-400 p-1 bg-slate-50/30"></td>
                     <td className="border border-slate-400 p-1">{getVal('day', 'scrap')}</td>
@@ -229,7 +256,8 @@ export default function MarisExcelDailyReport() {
                   </tr>
                   <tr className="font-bold border-t border-slate-700">
                     <td className="border border-slate-400 p-1 text-left font-sans">OUTPUT (KG/HR)</td>
-                    <td className="border border-slate-400 p-1 bg-slate-50 font-black text-blue-700 text-xs" colSpan={3}>{getVal('total', 'net_hr')}</td>
+                    <td className="border border-slate-400 p-1 bg-slate-50 font-black text-blue-700 text-xs"
+                        colSpan={3}>{getVal('total', 'net_hr')}</td>
                   </tr>
                   <tr className="font-bold bg-yellow-50">
                     <td className="border border-slate-400 p-1 text-left font-sans font-normal">Setting of kg/h</td>
@@ -237,15 +265,16 @@ export default function MarisExcelDailyReport() {
                     <td className="border border-slate-400 p-1 bg-yellow-300 border-amber-400">{getVal('night', 'setting_kgh', 'plain')}</td>
                     <td className="border border-slate-400 p-1 bg-yellow-100">{getVal('total', 'setting_kgh', 'plain')}</td>
                   </tr>
-                </tbody>
-              </table>
-            </div>
+                  </tbody>
+                </table>
+              </div>
 
-          </div>
+            </div>
         ) : (
-          <div className="text-center py-16 text-slate-500 font-bold border-2 border-dashed border-slate-300 max-w-4xl mx-auto rounded bg-white">
-            Vui lòng chọn ngày để tải dữ liệu cấu trúc hoàn thiện.
-          </div>
+            <div
+                className="text-center py-16 text-slate-500 font-bold border-2 border-dashed border-slate-300 max-w-4xl mx-auto rounded bg-white">
+              Vui lòng chọn ngày để tải dữ liệu cấu trúc hoàn thiện.
+            </div>
         )}
       </main>
     </div>

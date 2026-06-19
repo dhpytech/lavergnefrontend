@@ -16,7 +16,7 @@ export default function GlobalMarisPage() {
         date: new Date().toISOString().split('T')[0],
         employee: '', shift: 'DAY',
         production_data: [{ productCode: '', goodPro: null, dlnc: null, scrap: null, reject: null,
-                          screenChanger: null, visLab: null, outputSetting: null }],
+                          screenChanger: null, visLab: null, outputSetting: null ,outsource: false }],
         stop_time_data: [] , problems: []
       }]
     }
@@ -94,7 +94,7 @@ export default function GlobalMarisPage() {
               type="button"
               onClick={() => append({
                 date: new Date().toISOString().split('T')[0], employee: '', shift: 'DAY',
-                production_data: [{ productCode: '', goodPro: 0, dlnc: 0, scrap: 0, reject: 0, screenChanger: 0, visLab: 0, outputSetting: 0 }],
+                production_data: [{ productCode: '', goodPro: 0, dlnc: 0, scrap: 0, reject: 0, screenChanger: 0, visLab: 0, outputSetting: 0, outsource: false }],
                 stop_time_data: [], problems: []
               }as any)}
               className="flex items-center gap-2 px-6 py-3 bg-white border-2 border-slate-900 text-slate-900 rounded-xl font-black text-xs uppercase hover:bg-slate-900 hover:text-white transition-all shadow-sm"
