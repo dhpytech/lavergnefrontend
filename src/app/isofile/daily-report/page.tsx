@@ -1,15 +1,20 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import ExcelReportRow from '@/src/components/daily_report/ExcelReportRow';
 import ExcelReportHeader from '@/src/components/daily_report/ExcelReportHeader';
 import ExcelReportMeta from '@/src/components/daily_report/ExcelReportMeta';
 import ExcelShiftLogs from '@/src/components/daily_report/ExcelShiftLogs';
 
+import {getValReport, getActiveDlncCasesReport, getDlncShiftValReport, getAggregatedLogsByShiftReport, exportToExcel, exportToImage,
+    generatePdfBase64,
+} from '@/src/components/daily_report/report_utils';
+
 export default function MarisExcelDailyReport() {
   const [selectedDate, setSelectedDate] = useState<string>('2026-03-28');
   const [report, setReport] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const reportRef = useRef<HTMLDivElement>(null);
 
   const fetchReportData = async () => {
     setLoading(true);
@@ -30,110 +35,94 @@ export default function MarisExcelDailyReport() {
 
   useEffect(() => { fetchReportData(); }, [selectedDate]);
 
-  const getVal = (shift: 'day' | 'night' | 'total', key: string, formatType: 'number' | 'percent' | 'plain' = 'number', fallback = "-") => {
-    if (!report || !report.kpis || !report.kpis[shift]) return fallback;
-    const val = report.kpis[shift][key];
-    if (val === undefined || val === null) return fallback;
+  const getVal = (shift: 'day' | 'night' | 'total', key: string, formatType?: 'number' | 'percent' | 'plain', fallback?: string) => {
+      return getValReport(report, shift, key, formatType, fallback);
+    };
 
-    if (formatType === 'number') return val.toLocaleString();
-    if (formatType === 'percent') return `${(val * 100).toFixed(2)}%`;
-    return val;
-  };
-
-  const getActiveDlncCases = (): string[] => {
-    if (!report || !report.dlnc_breakdown || !report.dlnc_breakdown.total) return [];
-    return Object.keys(report.dlnc_breakdown.total).filter(caseName => {
-      const value = report.dlnc_breakdown.total[caseName];
-      return value !== undefined && value !== null && value !== 0 && caseName.toLowerCase() !== 'none';
-    });
-  };
+  const getActiveDlncCases = () => getActiveDlncCasesReport(report);
 
   const getDlncShiftVal = (shift: 'day' | 'night' | 'total', caseName: string) => {
-    if (!report || !report.dlnc_breakdown || !report.dlnc_breakdown[shift]) return "-";
-    const val = report.dlnc_breakdown[shift][caseName];
-    return val !== undefined && val !== 0 ? val.toLocaleString() : "-";
+    return getDlncShiftValReport(report,shift,caseName);
   };
 
-  const getAggregatedLogsByShift = (shiftName: 'day' | 'night') => {
-    if (!report) return { stopTimes: [], problems: [], comments: [] };
-
-    const currentStops = report.stop_details?.[shiftName] || [];
-    const currentProblems = report.problem_details?.[shiftName] || [];
-
-    const stopMap: { [key: string]: number } = {};
-    currentStops.forEach((st: any) => {
-      const code = st.stopTime || st.stopCode || "UnknownCode";
-      const rawDuration = st.hour || st.duration || st.stop_hr || 0;
-      const hours = typeof rawDuration === 'string' ? parseFloat(rawDuration) : rawDuration;
-      stopMap[code] = (stopMap[code] || 0) + (isNaN(hours) ? 0 : hours);
-    });
-
-    const stopTimesList = Object.entries(stopMap).map(([code, totalHours]) => ({
-      code,
-      hours: totalHours
-    }));
-
-    const problemSet = new Set<string>();
-    currentProblems.forEach((pr: any) => {
-      const pName = pr.problem || pr.problem_name || pr.reason || pr.title;
-      if (pName && pName.toString().trim() !== "") {
-        problemSet.add(pName.toString().trim());
-      }
-    });
-    const uniqueProblems = Array.from(problemSet);
-
-    const commentSet = new Set<string>();
-    if (report.kpis?.[shiftName]?.comments && Array.isArray(report.kpis[shiftName].comments)) {
-      report.kpis[shiftName].comments.forEach((c: string) => {
-        if (c && c.trim() !== "") commentSet.add(c.trim());
-      });
-    }
-
-    [...currentStops, ...currentProblems].forEach((log: any) => {
-      const cText = log.comment || log.comments || log.description || log.content;
-      if (cText && cText.toString().trim() !== "") {
-        commentSet.add(cText.toString().trim());
-      }
-    });
-    const uniqueComments = Array.from(commentSet);
-
-    return {
-      stopTimes: stopTimesList,
-      problems: uniqueProblems,
-      comments: uniqueComments
-    };
-  };
+  const getAggregatedLogsByShift = (shiftName: 'day' | 'night') => getAggregatedLogsByShiftReport(report, shiftName);
 
   const activeDlncCases = getActiveDlncCases();
   const dayLogs = getAggregatedLogsByShift('day');
   const nightLogs = getAggregatedLogsByShift('night');
 
+  const sidebarButtons = [
+    {
+      label: "VIEW REPORT", onClick: fetchReportData, icon: "📋",
+      customClass: "bg-blue-50 text-blue-800 border-blue-300 hover:bg-blue-100"
+    },
+    {
+      label: "EXPORT EXCEL", onClick: () => exportToExcel("main", selectedDate), icon: "📊",
+      customClass: "bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100"
+    },
+    {
+      label: "EXPORT PDF",
+      onClick: async () => {
+        if (!reportRef.current) return;
+        setLoading(true);
+        const base64 = await generatePdfBase64(reportRef.current);
+        if (base64) {
+          const link = document.createElement('a');
+          link.href = `data:application/pdf;base64,${base64}`;
+          link.download = `Maris_Production_Report_${selectedDate}.pdf`;
+          link.click();
+        }
+        setLoading(false);
+      },
+      icon: "📄",
+      customClass: "bg-rose-50 text-rose-800 border-rose-300 hover:bg-rose-100"
+    },
+    {
+      label: "EXPORT IMAGE", onClick: () =>exportToImage(reportRef.current,selectedDate), icon: "🖼️",
+      customClass: "bg-purple-50 text-purple-800 border-purple-300 hover:bg-purple-100"
+    },
+    {
+      label: "SEND EMAIL", onClick: () =>{}, icon: "✉️",
+      customClass: "bg-amber-50 text-amber-800 border-amber-300 hover:bg-amber-100"
+    },
+  ];
+
+  const baseButtonStyle = "w-full text-[11px] font-bold py-3 px-2 rounded border shadow flex flex-col " +
+      "items-center gap-1 transition-all active:scale-[0.98]";
+
   return (
     <div className="flex min-h-screen bg-slate-200 text-slate-900 font-sans antialiased">
-      <aside className="w-60 bg-[#0070c0] text-white flex flex-col justify-between shrink-0 p-4 shadow-xl">
+      <aside className="w-60 bg-slate-400 text-white flex flex-col justify-between shrink-0 p-4 shadow-xl">
         <div className="space-y-6">
-          <div className="bg-blue-900/30 p-3 rounded text-center">
-            <label className="block text-[11px] font-bold tracking-wider mb-1 uppercase">REPORT DATE:</label>
+            <label className=" block text-[14px] font-bold tracking-wider ml-1 mb-1 uppercase text-left text-blue-800">REPORT
+              DATE:</label>
             <input
-              type="date"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-              className="w-full bg-white text-slate-900 text-xs font-bold p-1.5 rounded border border-blue-700 outline-none text-center"
+                type="date"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                className="w-full bg-white text-slate-900 text-xs font-bold p-3 rounded border border-blue-700 outline-none text-right"
             />
-          </div>
-          <button onClick={fetchReportData} className="w-full bg-white hover:bg-slate-100 text-slate-800 text-[11px] font-bold py-3 px-2 rounded border border-slate-300 shadow flex flex-col items-center gap-1">
-            <span>📋 VIEW REPORT</span>
-          </button>
+
+          {sidebarButtons.map((btn, index) => (
+            <button
+              key={index}
+              onClick={btn.onClick}
+              className={`${baseButtonStyle} ${btn.customClass}`}
+            >
+              <span>{btn.icon} {btn.label}</span>
+            </button>
+          ))}
         </div>
-        <div className="text-center text-[10px] text-blue-200 font-semibold pt-3 border-t border-blue-400/30">MARIS SYSTEM v2.1</div>
+
       </aside>
 
 
       <main className="flex-1 p-6 overflow-y-auto">
         {loading ? (
-          <div className="text-center py-24 font-mono text-xs text-slate-500 animate-pulse uppercase tracking-wider">Loading...</div>
+            <div className="text-center py-24 font-mono text-xs text-slate-500 animate-pulse uppercase tracking-wider">Loading...</div>
         ) : report ? (
             <div
+                ref={reportRef}
                 className="max-w-4xl mx-auto bg-white border border-slate-400 p-6 shadow-2xl text-slate-900 font-sans text-xs">
               <ExcelReportHeader/>
               <ExcelReportMeta selectedDate={selectedDate} productCodes={getVal('total', 'product_codes', 'plain')}/>
@@ -186,7 +175,7 @@ export default function MarisExcelDailyReport() {
                   <ExcelReportRow label="Reject" apiKey="reject" getVal={getVal} customTotalClass="font-bold"/>
 
                   <ExcelReportRow label="PROD BRUT" apiKey="output" getVal={getVal}
-                                  customRowClass="font-bold bg-yellow-200 text-amber-800"
+                                  customRowClass="font-bold bg-[#FEF08A] text-amber-800"
                                   customTotalClass="text-amber-700"/>
                   <ExcelReportRow label="Yield" apiKey="yield_pct" getVal={getVal} formatType="percent"
                                   customRowClass="text-slate-900 font-black border-y border-slate-800 font-bold"/>
