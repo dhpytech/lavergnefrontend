@@ -374,9 +374,83 @@ export const generatePdfBase64 = async (element: HTMLDivElement | null): Promise
     }
 
     const dataUriString = pdf.output('datauristring');
-    return dataUriString.split(',')[1]; // Tách chuỗi raw Base64 loại bỏ header định dạng dữ liệu
+    return dataUriString.split(',')[1];
   } catch (err) {
     console.error("Lỗi khởi tạo chuỗi PDF Base64:", err);
     return null;
+  }
+};
+
+
+interface SendDynamicEmailParams {
+  element: HTMLDivElement | null;
+  senderEmail: string;
+  senderPass: string;
+  recipients: string[];
+  subject: string;
+  notes: string;
+  selectedDate: string;
+}
+
+export const sendReportEmail = async (params: SendDynamicEmailParams): Promise<boolean> => {
+  if (!params.element) {
+    alert("Error: Cannot find report interface layout to generate PDF.");
+    return false;
+  }
+
+  const pdfBase64 = await generatePdfBase64(params.element);
+  if (!pdfBase64) {
+    alert("Error: Failed to render report snapshot to PDF format.");
+    return false;
+  }
+
+  try {
+    const byteCharacters = atob(pdfBase64);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    const pdfBlob = new Blob([byteArray], { type: 'application/pdf' });
+    const pdfFile = new File([pdfBlob], `Maris_Production_Report_${params.selectedDate}.pdf`, { type: 'application/pdf' });
+
+    const formData = new FormData();
+    formData.append('sender_email', params.senderEmail.trim());
+    formData.append('sender_password', params.senderPass);
+    formData.append('subject', params.subject);
+    formData.append('notes', params.notes || '');
+    formData.append('date', params.selectedDate);
+    formData.append('pdf_file', pdfFile);
+
+
+    const cleanRecipients = params.recipients || [];
+    formData.append('recipients', JSON.stringify(cleanRecipients));
+
+    const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://gunicorn-lavergnebackendwsgi-production.up.railway.app';
+
+    const response = await fetch(`${BASE_URL}/mail/send-report-email/`, {
+      method: 'POST',
+      body: formData
+    } as any);
+
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      const result = await response.json();
+      if (response.ok && result.success) {
+        alert("Report email dispatched successfully!");
+        return true;
+      }
+      alert(`Server Warning: ${result.message}`);
+      return false;
+    } else {
+      const rawHtml = await response.text();
+      console.error("Critical Backend Webpage Crash Output:", rawHtml);
+      alert(`Server Error (${response.status}): The server returned non-JSON web content.`);
+      return false;
+    }
+  } catch (err) {
+    console.error("Network or implementation dispatch error:", err);
+    alert("Connection Failure: Unable to talk with backend email core.");
+    return false;
   }
 };

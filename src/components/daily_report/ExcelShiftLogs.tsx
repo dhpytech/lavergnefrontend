@@ -13,6 +13,8 @@ interface ExcelShiftLogsProps {
   logs: LogData;
 }
 
+import {StopCodeChange} from '@/src/constants/Maris'
+
 export default function ExcelShiftLogs({ shiftType, logs }: ExcelShiftLogsProps) {
   const isDay = shiftType === 'day';
   const titleText = isDay ? "☀️ DAY SHIFT:" : "🌙 NIGHT SHIFT:";
@@ -30,7 +32,8 @@ export default function ExcelShiftLogs({ shiftType, logs }: ExcelShiftLogsProps)
         <div className="pl-3 font-mono mt-0.5 space-y-0.5 text-slate-900">
           {logs.stopTimes.length > 0 ? (
             logs.stopTimes.map((st, i) => (
-              <div key={i}>• {st.code}: <span className="font-bold text-red-700">{st.hours.toFixed(2)}h</span></div>
+              <div key={i}>• {st.code}: <span className="font-bold text-red-700">{st.hours.toFixed(2)}
+                  {StopCodeChange.includes(st.code) ? ' time' : ' h'}</span></div>
             ))
           ) : (
             <div className="text-slate-400 italic text-[10px]">No StopTime logged</div>

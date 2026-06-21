@@ -5,14 +5,16 @@ import ExcelReportRow from '@/src/components/daily_report/ExcelReportRow';
 import ExcelReportHeader from '@/src/components/daily_report/ExcelReportHeader';
 import ExcelReportMeta from '@/src/components/daily_report/ExcelReportMeta';
 import ExcelShiftLogs from '@/src/components/daily_report/ExcelShiftLogs';
+import EmailModal from '@/src/components/daily_report/EmailModal';
 
 import {getValReport, getActiveDlncCasesReport, getDlncShiftValReport, getAggregatedLogsByShiftReport, exportToExcel, exportToImage,
-    generatePdfBase64,
+    generatePdfBase64,sendReportEmail,
 } from '@/src/components/daily_report/report_utils';
 
 export default function MarisExcelDailyReport() {
   const [selectedDate, setSelectedDate] = useState<string>('2026-03-28');
   const [report, setReport] = useState<any>(null);
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const reportRef = useRef<HTMLDivElement>(null);
 
@@ -34,6 +36,27 @@ export default function MarisExcelDailyReport() {
   };
 
   useEffect(() => { fetchReportData(); }, [selectedDate]);
+
+  const handleSendEmailApi = async (
+  senderEmail: string,
+  senderPass: string,
+  recipients: string[],
+  subject: string,
+  notes: string
+) => {
+
+  const success = await sendReportEmail({
+    element: reportRef.current,
+    senderEmail: senderEmail,
+    senderPass: senderPass,
+    recipients: recipients,
+    subject: subject,
+    notes: notes,
+    selectedDate: selectedDate
+  });
+
+  return success;
+};
 
   const getVal = (shift: 'day' | 'night' | 'total', key: string, formatType?: 'number' | 'percent' | 'plain', fallback?: string) => {
       return getValReport(report, shift, key, formatType, fallback);
@@ -82,7 +105,7 @@ export default function MarisExcelDailyReport() {
       customClass: "bg-purple-50 text-purple-800 border-purple-300 hover:bg-purple-100"
     },
     {
-      label: "SEND EMAIL", onClick: () =>{}, icon: "✉️",
+      label: "SEND EMAIL", onClick: () => setIsEmailModalOpen(true), icon: "✉️",
       customClass: "bg-amber-50 text-amber-800 border-amber-300 hover:bg-amber-100"
     },
   ];
@@ -266,6 +289,13 @@ export default function MarisExcelDailyReport() {
             </div>
         )}
       </main>
+
+      <EmailModal
+        isOpen={isEmailModalOpen}
+        onClose={() => setIsEmailModalOpen(false)}
+        onSend={handleSendEmailApi}
+        selectedDate={selectedDate}
+      />
     </div>
   );
 }
